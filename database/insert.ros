@@ -1,0 +1,38 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#| <Put a one-line description here>
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ql:quickload :dbi))
+
+(defpackage :ros.script.database.insert
+  (:use :cl))
+(in-package :ros.script.database.insert)
+
+(defvar *db*
+  (dbi:connect :mysql
+                   :database-name "testdb"
+                   :username "testuser"
+                   :password "password"))
+
+
+(defun insert (first-name last-name current-date)
+  (let* ((query (dbi:prepare *db*
+                             "insert into users values (null, ?, ?, ?)"))
+         (result (dbi:execute query first-name last-name current-date)))
+    (print result)))
+
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+  (let ((first-name (first argv))
+        (last-name (second argv))
+        (current-date (format-yyyy-mm-dd (get-decoded-time))))
+    (insert first-name last-name current-date)))
+;;; vim: set ft=lisp lisp:
+
+
+(defun format-yyyy-mm-dd (decoded-time)
+  (multiple-value-bind (second minute hour day month year) (get-decoded-time)
+    (concatenate 'string (princ-to-string year) "-" (princ-to-string month) "-" (princ-to-string day))))

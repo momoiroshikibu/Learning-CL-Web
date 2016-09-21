@@ -6,9 +6,9 @@ exec ros -Q -- $0 "$@"
 (progn ;;init forms
   (ql:quickload :dbi))
 
-(defpackage :ros.script.mysql
+(defpackage :ros.script.database.select
   (:use :cl))
-(in-package :ros.script.mysql)
+(in-package :ros.script.database.select)
 
 (defvar *db*
   (dbi:connect :mysql
@@ -31,4 +31,3 @@ exec ros -Q -- $0 "$@"
   (declare (ignorable argv))
   (select (first argv)))
 ;;; vim: set ft=lisp lisp:
-
