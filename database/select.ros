@@ -4,21 +4,18 @@
 exec ros -Q -- $0 "$@"
 |#
 (progn ;;init forms
-  (ql:quickload :dbi))
+  (ql:quickload :dbi)
+  (load (merge-pathnames (make-pathname :directory '(:relative "./database.lisp")))))
+
 
 (defpackage :ros.script.database.select
   (:use :cl))
 (in-package :ros.script.database.select)
 
-(defvar *db*
-  (dbi:connect :mysql
-                   :database-name "testdb"
-                   :username "testuser"
-                   :password "password"))
-
 
 (defun select (n)
-  (let* ((query (dbi:prepare *db*
+  (let* ((db ros.script.database.connection::db)
+         (query (dbi:prepare db
                              "select * from users where id > ?"))
          (result (dbi:execute query n)))
     (loop for row = (dbi:fetch result)
