@@ -1,0 +1,34 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#| <Put a one-line description here>
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ql:quickload :dbi))
+
+(defpackage :ros.script.mysql
+  (:use :cl))
+(in-package :ros.script.mysql)
+
+(defvar *db*
+  (dbi:connect :mysql
+                   :database-name "testdb"
+                   :username "testuser"
+                   :password "password"))
+
+
+(defun select (n)
+  (let* ((query (dbi:prepare *db*
+                             "select * from users where id > ?"))
+         (result (dbi:execute query n)))
+    (loop for row = (dbi:fetch result)
+       while row
+       do (print row)
+         )))
+
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+  (select (first argv)))
+;;; vim: set ft=lisp lisp:
+
