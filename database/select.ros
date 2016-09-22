@@ -8,10 +8,10 @@ exec ros -Q -- $0 "$@"
   (load (merge-pathnames (make-pathname :directory '(:relative "./database.lisp")))))
 
 
-(defpackage :ros.script.database.select
+(defpackage com.momoiroshikibu.database.select
   (:use :cl
         :com.momoiroshikibu.database))
-(in-package :ros.script.database.select)
+(in-package :com.momoiroshikibu.database.select)
 
 
 (defun select (n)

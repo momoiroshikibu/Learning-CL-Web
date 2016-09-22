@@ -4,21 +4,20 @@
 exec ros -Q -- $0 "$@"
 |#
 (progn ;;init forms
-  (ql:quickload :dbi))
+  (ql:quickload :dbi)
+  (load (merge-pathnames (make-pathname :directory '(:relative "./database.lisp"))))
+  (load (merge-pathnames (make-pathname :directory '(:relative "./format.lisp")))))
 
-(defpackage :ros.script.database.insert
-  (:use :cl))
-(in-package :ros.script.database.insert)
+(defpackage com.momoiroshikibu.database.insert
+  (:use :cl
+        :com.momoiroshikibu.database
+        :com.momoiroshikibu.format))
 
-(defvar *db*
-  (dbi:connect :mysql
-                   :database-name "testdb"
-                   :username "testuser"
-                   :password "password"))
+(in-package :com.momoiroshikibu.database.insert)
 
 
 (defun insert (first-name last-name current-date)
-  (let* ((query (dbi:prepare *db*
+  (let* ((query (dbi:prepare database
                              "insert into users values (null, ?, ?, ?)"))
          (result (dbi:execute query first-name last-name current-date)))
     (print result)))
@@ -31,8 +30,3 @@ exec ros -Q -- $0 "$@"
         (current-date (format-yyyy-mm-dd (get-decoded-time))))
     (insert first-name last-name current-date)))
 ;;; vim: set ft=lisp lisp:
-
-
-(defun format-yyyy-mm-dd (decoded-time)
-  (multiple-value-bind (second minute hour day month year) (get-decoded-time)
-    (concatenate 'string (princ-to-string year) "-" (princ-to-string month) "-" (princ-to-string day))))
