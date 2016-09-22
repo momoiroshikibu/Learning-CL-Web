@@ -1,0 +1,25 @@
+#!/bin/sh
+#|-*- mode:lisp -*-|#
+#| <Put a one-line description here>
+exec ros -Q -- $0 "$@"
+|#
+(progn ;;init forms
+  (ql:quickload :dbi)
+  (load (merge-pathnames (make-pathname :directory '(:relative "./database.lisp")))))
+
+(defpackage com.momoiroshikibu.database.crud
+  (:use :cl
+        :com.momoiroshikibu.database))
+(in-package :com.momoiroshikibu.database.crud)
+
+
+(defun main (&rest argv)
+  (declare (ignorable argv))
+
+  (let ((method (string-upcase (first argv))))
+    (cond ((equal method (symbol-name 'select))
+           (select (cdr argv)))
+          (t
+           (error "undefined method designated")))))
+
+

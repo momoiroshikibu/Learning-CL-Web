@@ -4,15 +4,27 @@
 
 (ql:quickload :dbi)
 
-;; (progn ;;init forms
-;;   (ql:quickload :dbi))
-
-;; (defpackage :ros.script.database.connection
-;;   (:use :cl))
-;; (in-package :ros.script.database.connection)
-
 (defvar database (dbi:connect :mysql
-                        :database-name "testdb"
-                        :username "testuser"
-                        :password "password"))
-(export 'database)
+                              :database-name "testdb"
+                              :username "testuser"
+                              :password "password"))
+
+(defun select (n)
+  (let* ((query (dbi:prepare database
+                             "select * from users where id > ?"))
+         (result (dbi:execute query n)))
+    (loop for row = (dbi:fetch result)
+       while row
+       do (print row)
+         )))
+
+(defun insert (first-name last-name current-date)
+  (let* ((query (dbi:prepare database
+                             "insert into users values (null, ?, ?, ?)"))
+         (result (dbi:execute query first-name last-name current-date)))
+    (print result)))
+
+
+(export '(database
+          select
+          insert))
