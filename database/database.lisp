@@ -21,6 +21,17 @@
        do (print row)
          )))
 
+
+(defun select-one (id)
+  (let* ((query (dbi:prepare database
+                             "select * from users where id = ?"))
+         (result (dbi:execute query id))
+         (row (dbi:fetch result)))
+    (if (null row)
+        nil
+        row)))
+
+
 (defun insert (first-name last-name)
   (let* ((query (dbi:prepare database
                              "insert into users values (null, ?, ?, ?)"))
@@ -31,4 +42,5 @@
 
 (export '(database
           select
+          select-one
           insert))

@@ -13,6 +13,14 @@ exec ros -Q -- $0 "$@"
 (in-package :com.momoiroshikibu.database.crud)
 
 
+(defun print-user (user-plist)
+  (print (format nil "ID: ~A~&FirstName: ~A~&LastName: ~A~&CreatedAt: ~A~&"
+                 (getf user-plist :|id|)
+                 (getf user-plist :|first_name|)
+                 (getf user-plist :|last_name|)
+                 (getf user-plist :|created_at|))))
+
+
 (defun main (&rest argv)
   (declare (ignorable argv))
 
@@ -20,6 +28,8 @@ exec ros -Q -- $0 "$@"
         (args (cdr argv)))
     (cond ((equal method (symbol-name 'select))
            (select (first args)))
+          ((equal method (symbol-name 'select-one))
+           (print-user (select-one (first args))))
           ((equal method (symbol-name 'insert))
            (insert (first args)
                    (second args)))
