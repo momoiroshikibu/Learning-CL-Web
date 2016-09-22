@@ -9,13 +9,13 @@ exec ros -Q -- $0 "$@"
 
 
 (defpackage :ros.script.database.select
-  (:use :cl))
+  (:use :cl
+        :com.momoiroshikibu.database))
 (in-package :ros.script.database.select)
 
 
 (defun select (n)
-  (let* ((db ros.script.database.connection::db)
-         (query (dbi:prepare db
+  (let* ((query (dbi:prepare database
                              "select * from users where id > ?"))
          (result (dbi:execute query n)))
     (loop for row = (dbi:fetch result)
