@@ -16,10 +16,12 @@ exec ros -Q -- $0 "$@"
 (defun main (&rest argv)
   (declare (ignorable argv))
 
-  (let ((method (string-upcase (first argv))))
+  (let ((method (string-upcase (first argv)))
+        (args (cdr argv)))
     (cond ((equal method (symbol-name 'select))
-           (select (cdr argv)))
+           (select (first args)))
+          ((equal method (symbol-name 'insert))
+           (insert (first args)
+                   (second args)))
           (t
            (error "undefined method designated")))))
-
-

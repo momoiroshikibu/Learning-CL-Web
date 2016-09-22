@@ -1,5 +1,8 @@
+(load (merge-pathnames (make-pathname :directory '(:relative "./format.lisp"))))
+
 (defpackage com.momoiroshikibu.database
-  (:use :cl))
+  (:use :cl
+        :com.momoiroshikibu.format))
 (in-package :com.momoiroshikibu.database)
 
 (ql:quickload :dbi)
@@ -18,9 +21,10 @@
        do (print row)
          )))
 
-(defun insert (first-name last-name current-date)
+(defun insert (first-name last-name)
   (let* ((query (dbi:prepare database
                              "insert into users values (null, ?, ?, ?)"))
+         (current-date (format-yyyy-mm-dd (get-decoded-time)))
          (result (dbi:execute query first-name last-name current-date)))
     (print result)))
 
