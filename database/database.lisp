@@ -1,11 +1,17 @@
-(load (merge-pathnames (make-pathname :directory '(:relative "./format.lisp"))))
+(ql:quickload :dbi)
+                                        ;(load (merge-pathnames (make-pathname :directory '(:relative "format.lisp"))))
+
+(defun format-yyyy-mm-dd (decoded-time)
+  (multiple-value-bind (second minute hour day month year) (decoded-time)
+    (concatenate 'string (princ-to-string year) "-" (princ-to-string month) "-" (princ-to-string day))))
+
 
 (defpackage com.momoiroshikibu.database
   (:use :cl
-        :com.momoiroshikibu.format))
+                                        ;        :com.momoiroshikibu.format
+        ))
 (in-package :com.momoiroshikibu.database)
 
-(ql:quickload :dbi)
 
 (defvar database (dbi:connect :mysql
                               :database-name "testdb"
@@ -13,6 +19,8 @@
                               :password "password"))
 
 (defun select (n)
+  (print "select")
+  (print n)
   (let* ((query (dbi:prepare database
                              "select * from users where id > ?"))
          (result (dbi:execute query n)))
