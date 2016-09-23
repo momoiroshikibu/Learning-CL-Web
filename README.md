@@ -3,7 +3,10 @@
 ## commands
 
 ```
-ros init fact
-chmod +x fact.ros
-./fact.ros
+$ ros crud.ros select-one 1
+"ID: 1
+FirstName: Taro
+LastName: Yamada
+CreatedAt: 3683404800
+"
 ```
