@@ -1,6 +1,6 @@
 (in-package :cl-user)
 ; (load (merge-pathnames (make-pathname :directory '(:relative "./format.lisp"))))
-(ql:quickload :dbi)
+; (ql:quickload :dbi)
 (defpackage com.momoiroshikibu.database
   (:use :cl
 ;        :com.momoiroshikibu.format
