@@ -22,13 +22,6 @@
           (getf user-plist :|last_name|)
           (getf user-plist :|created_at|)))
 
-;; (lambda (env)
-;;   (declare (ignore env))
-;;   `(200
-;;     (:content-type "text/plain")
-;;     ("hello " ,(format-user (com.momoiroshikibu.database:select-one 1)))))
-
-
 (lambda (env)
   (cond
     ((string= (getf env :path-info) "/")
