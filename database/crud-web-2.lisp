@@ -22,21 +22,38 @@
           (getf user-plist :|last_name|)
           (getf user-plist :|created_at|)))
 
+(defun htmlify-user (user-plist)
+  (let ((user-id (getf user-plist :|id|))
+        (first-name (getf user-plist :|first_name|)))
+    (format nil "<a href=users/~A>~A</a>" user-id first-name)))
+
+(defun listify-user (user-plist)
+  (format nil "<li>~A</li>" (htmlify-user user-plist)))
+
+
+(defun routing=user-id (path)
+  (ppcre:register-groups-bind (user-id)
+      ("/users/([0-9]+)" path :sharedp t)
+    (list user-id)))
+
 (lambda (env)
   (cond
     ((string= (getf env :path-info) "/")
      `(200
-       (:content-type "text/plain")
+       (:content-type "text/html")
+       ("<html><body><a href='/users'>/users</a></body></html>")))
+
+    ((string= (getf env :path-info) "/users")
+     `(200
+       (:content-type "text/html")
        ,(loop for row in (com.momoiroshikibu.database:select-multi 10)
-                    collect (format-user row))))
-    ((string= (getf env :path-info) "/one")
+                    collect (listify-user row))))
+
+    ((routing=user-id (getf env :path-info))
      `(200
        (:content-type "text/plain")
-       (,(format-user (com.momoiroshikibu.database:select-one 1)))))
-    ((string= (getf env :path-info) "/two")
-     '(200
-       (:content-type "text/html")
-       ("<h1>two</h1>")))
+       (,(format-user (com.momoiroshikibu.database:select-one (car (routing=user-id (getf env :path-info))))))))
+
     (t
      '(404
        (:content-type "text/plain")
