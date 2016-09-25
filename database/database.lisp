@@ -15,13 +15,13 @@
                               :username "testuser"
                               :password "password"))
 
-(defun select (n)
+(defun select-multi (n)
   (let* ((query (dbi:prepare database
-                             "select * from users where id > ?"))
+                             "select * from users limit ?"))
          (result (dbi:execute query n)))
     (loop for row = (dbi:fetch result)
        while row
-       do (print row)
+       collect row
          )))
 
 
@@ -44,7 +44,7 @@
 
 
 (export '(database
-          select
+          select-multi
           select-one
 ;          insert
 ))
