@@ -2,7 +2,8 @@
 (progn ;;init forms
   (ql:quickload :dbi)
   (ql:quickload :clack)
-  (ql:quickload :dbi)
+  (ql:quickload :lack)
+  (ql:quickload :lack-request)
   (ql:quickload :hunchentoot)
   (load (merge-pathnames (make-pathname :directory '(:relative "./database.lisp")))))
 
@@ -11,7 +12,10 @@
 (defpackage com.momoiroshikibu.database.crud-web
   (:use :cl
         :clack
-        :com.momoiroshikibu.database))
+        :com.momoiroshikibu.database)
+  (:import-from :lack.request
+                :make-request
+                :request-cookies))
 (in-package :com.momoiroshikibu.database.crud-web)
 
 
@@ -36,6 +40,19 @@
       ("/users/([0-9]+)" path :sharedp t)
     (list user-id)))
 
+(defun get-request-value (pairs key)
+  (defun iter (pairs key)
+    (print key)
+    (print pairs)
+    (if (= 0 (length pairs))
+        nil
+        (if (string= key (car (first pairs)))
+            (progn
+              (cadr (first pairs)))
+            (iter (cdr pairs) key))
+        ))
+  (iter pairs key))
+
 (lambda (env)
   (cond
     ((string= (getf env :path-info) "/")
@@ -44,10 +61,32 @@
        ("<html><body><a href='/users'>/users</a></body></html>")))
 
     ((string= (getf env :path-info) "/users")
+     (if (string= (getf env :request-method) "GET")
+         `(200
+           (:content-type "text/html")
+           ,(loop for row in (com.momoiroshikibu.database:select-multi 10)
+               collect (listify-user row)))
+         (let* ((request (lack.request:make-request env))
+                (body-plist (lack.request:request-body-parameters request)))
+           (inspect body-plist)
+           (print (getf (first body-plist) :first-name))
+           (print (getf body-plist :last-name))
+           `(200
+             (:content-type "text/html")
+             ,(com.momoiroshikibu.database:insert
+               (getf body-plist :first-name)
+               (getf body-plist :last-name)))
+           )))
+
+    ((string= (getf env :path-info) "/users/new")
      `(200
        (:content-type "text/html")
-       ,(loop for row in (com.momoiroshikibu.database:select-multi 10)
-                    collect (listify-user row))))
+       ("<h1>create new user</h1><form method='POST' action='/users'><input name=first-name placeholder='First Name' /><input name=last-name placeholder='Last Name' /><button>register</button></form>")))
+
+    ((string= (getf env :path-info) "/users")
+     `(200
+       (:content-type "text/html")
+       ("<h1>create new user</h1>")))
 
     ((routing=user-id (getf env :path-info))
      `(200
