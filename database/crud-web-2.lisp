@@ -5,6 +5,7 @@
   (ql:quickload :lack)
   (ql:quickload :lack-request)
   (ql:quickload :hunchentoot)
+  (load (merge-pathnames (make-pathname :directory '(:relative "./datetime.lisp"))))
   (load (merge-pathnames (make-pathname :directory '(:relative "./database.lisp")))))
 
 
