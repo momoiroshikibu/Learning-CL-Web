@@ -42,13 +42,11 @@
 
 
 (defun insert (first-name last-name)
-  (print 'insert)
   (let* ((query (dbi:prepare database
                              "insert into users values (null, ?, ?, ?)"))
          (current-date (get-current-date-in-format-yyyy-mm-dd))
-         (print current-date)
          (result (dbi:execute query first-name last-name current-date)))
-    (print result)))
+    (dbi:fetch result)))
 
 
 (export '(database
