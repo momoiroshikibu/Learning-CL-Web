@@ -16,9 +16,9 @@
                               :username "testuser"
                               :password "password"))
 
-(defun format-yyyy-mm-dd (decoded-time)
-    (multiple-value-bind (second minute hour day month year) decoded-time
-      (concatenate 'string (princ-to-string year) "-" (princ-to-string month) "-" (princ-to-string day))))
+(defun get-current-date-in-format-yyyy-mm-dd ()
+  (multiple-value-bind (second minute hour day month year) (get-decoded-time)
+    (concatenate 'string (princ-to-string year) "-" (princ-to-string month) "-" (princ-to-string day))))
 
 
 (defun select-multi (n)
@@ -42,14 +42,17 @@
 
 
 (defun insert (first-name last-name)
+  (print 'insert)
   (let* ((query (dbi:prepare database
                              "insert into users values (null, ?, ?, ?)"))
-         (current-date (format-yyyy-mm-dd (get-decoded-time)))
+         (current-date (get-current-date-in-format-yyyy-mm-dd))
+         (print current-date)
          (result (dbi:execute query first-name last-name current-date)))
     (print result)))
 
 
 (export '(database
+          get-current-date-in-format-yyyy-mm-dd
           select-multi
           select-one
           insert))
