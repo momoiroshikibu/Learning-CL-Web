@@ -42,15 +42,12 @@
 
 (defun get-request-value (pairs key)
   (defun iter (pairs key)
-    (print key)
-    (print pairs)
-    (if (= 0 (length pairs))
-        nil
-        (if (string= key (car (first pairs)))
-            (progn
-              (cadr (first pairs)))
-            (iter (cdr pairs) key))
-        ))
+    (let ((pair (car pairs)))
+      (if (null pair)
+          nil
+          (if (string= key (car pair))
+              (cdr pair)
+              (iter (cdr pairs) key)))))
   (iter pairs key))
 
 (lambda (env)
@@ -67,15 +64,12 @@
            ,(loop for row in (com.momoiroshikibu.database:select-multi 10)
                collect (listify-user row)))
          (let* ((request (lack.request:make-request env))
-                (body-plist (lack.request:request-body-parameters request)))
-           (inspect body-plist)
-           (print (getf (first body-plist) :first-name))
-           (print (getf body-plist :last-name))
+                (body-parameters (lack.request:request-body-parameters request)))
            `(200
              (:content-type "text/html")
              ,(com.momoiroshikibu.database:insert
-               (getf body-plist :first-name)
-               (getf body-plist :last-name)))
+               (get-request-value body-parameters "first-name")
+               (get-request-value body-parameters "last-name")))
            )))
 
     ((string= (getf env :path-info) "/users/new")
