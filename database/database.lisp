@@ -20,8 +20,7 @@
          (result (dbi:execute query n)))
     (loop for row = (dbi:fetch result)
        while row
-       collect row
-         )))
+       collect row)))
 
 
 (defun select-one (id)
@@ -40,5 +39,3 @@
          (current-date (get-current-date-in-yyyy-mm-dd-format))
          (result (dbi:execute query first-name last-name current-date)))
     (dbi:fetch result)))
-
-
