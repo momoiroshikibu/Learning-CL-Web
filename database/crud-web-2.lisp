@@ -61,15 +61,16 @@
      (if (string= (getf env :request-method) "GET")
          `(200
            (:content-type "text/html")
-           ,(loop for row in (com.momoiroshikibu.database:select-multi 10)
+           ,(loop for row in (com.momoiroshikibu.database:select-multi 100)
                collect (listify-user row)))
          (let* ((request (lack.request:make-request env))
                 (body-parameters (lack.request:request-body-parameters request)))
+           (com.momoiroshikibu.database:insert
+            (get-request-value body-parameters "first-name")
+            (get-request-value body-parameters "last-name"))
            `(200
              (:content-type "text/html")
-             ,(com.momoiroshikibu.database:insert
-               (get-request-value body-parameters "first-name")
-               (get-request-value body-parameters "last-name")))
+             ("New User" ,(get-request-value body-parameters "first-name")))
            )))
 
     ((string= (getf env :path-info) "/users/new")
