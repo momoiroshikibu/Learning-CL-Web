@@ -56,22 +56,27 @@
     ((string= (getf env :path-info) "/")
      `(200
        (:content-type "text/html")
-       ("<html><body><a href='/users'>/users</a></body></html>")))
+       ("<html><body>"
+        "<a href='/users'>/users</a>"
+        "<a href='/users/new'>/users/new</a>"
+        "</body></html>")))
 
     ((string= (getf env :path-info) "/users")
      (if (string= (getf env :request-method) "GET")
+         ;; GET
          `(200
            (:content-type "text/html")
-           ,(loop for row in (com.momoiroshikibu.database:select-multi 100)
-               collect (listify-user row)))
+           ("<a href='/users/new'>/users/new</a>"
+            ,@(loop for row in (com.momoiroshikibu.database:select-multi 100)
+                collect (listify-user row))))
+         ;; POST
          (let* ((request (lack.request:make-request env))
                 (body-parameters (lack.request:request-body-parameters request)))
            (com.momoiroshikibu.database:insert
             (get-request-value body-parameters "first-name")
             (get-request-value body-parameters "last-name"))
-           `(200
-             (:content-type "text/html")
-             ("New User" ,(get-request-value body-parameters "first-name")))
+           `(303
+             (:location "/users"))
            )))
 
     ((string= (getf env :path-info) "/users/new")
