@@ -51,45 +51,51 @@
               (iter (cdr pairs) key)))))
   (iter pairs key))
 
+(defmacro path (pattern request-path)
+  `(string= ,pattern ,request-path))
+
 (lambda (env)
-  (cond ((string= (getf env :path-info) "/")
-         `(200
-           (:content-type "text/html")
-           ("<html><body>"
-            "<a href='/users'>/users</a>"
-            "<a href='/users/new'>/users/new</a>"
-            "</body></html>")))
-        ((string= (getf env :path-info) "/users")
-         (cond ((string= (getf env :request-method) "GET")
-                `(200
-                  (:content-type "text/html")
-                  ("<a href='/users/new'>/users/new</a>"
-                   ,@(loop for row in (com.momoiroshikibu.database:select-multi 1000)
-                        collect (listify-user row)))))
-               ((string= (getf env :request-method) "POST")
-                (let* ((request (lack.request:make-request env))
-                       (body-parameters (lack.request:request-body-parameters request)))
-                  (com.momoiroshikibu.database:insert
-                   (get-request-value body-parameters "first-name")
-                   (get-request-value body-parameters "last-name"))
-                  `(303
-                    (:location "/users"))))))
-        ((string= (getf env :path-info) "/users/new")
-         `(200
-           (:content-type "text/html")
-           ("<h1>create new user</h1><form method='POST' action='/users'><input name=first-name placeholder='First Name' /><input name=last-name placeholder='Last Name' /><button>register</button></form>")))
+  (let ((request-path (getf env :path-info)))
+    (cond ((path "/usres" request-path)
+           `(200
+             (:content-type "text/html")
+             ("<html><body>"
+              "<a href='/users'>/users</a>"
+              "<a href='/users/new'>/users/new</a>"
+              "</body></html>")))
 
-        ((string= (getf env :path-info) "/users")
-         `(200
-           (:content-type "text/html")
-           ("<h1>create new user</h1>")))
+          ((path "/users" request-path)
+           (cond ((string= (getf env :request-method) "GET")
+                  `(200
+                    (:content-type "text/html")
+                    ("<a href='/users/new'>/users/new</a>"
+                     ,@(loop for row in (com.momoiroshikibu.database:select-multi 1000)
+                          collect (listify-user row)))))
+                 ((string= (getf env :request-method) "POST")
+                  (let* ((request (lack.request:make-request env))
+                         (body-parameters (lack.request:request-body-parameters request)))
+                    (com.momoiroshikibu.database:insert
+                     (get-request-value body-parameters "first-name")
+                     (get-request-value body-parameters "last-name"))
+                    `(303
+                      (:location "/users"))))))
 
-        ((routing=user-id (getf env :path-info))
-         `(200
-           (:content-type "text/plain")
-           (,(format-user (com.momoiroshikibu.database:select-one (car (routing=user-id (getf env :path-info))))))))
+          ((string= request-path "/users/new")
+           `(200
+             (:content-type "text/html")
+             ("<h1>create new user</h1><form method='POST' action='/users'><input name=first-name placeholder='First Name' /><input name=last-name placeholder='Last Name' /><button>register</button></form>")))
 
-        (t
-         '(404
-           (:content-type "text/plain")
-           ("Not Found")))))
+          ((string= request-path "/users")
+           `(200
+             (:content-type "text/html")
+             ("<h1>create new user</h1>")))
+
+          ((routing=user-id request-path)
+           `(200
+             (:content-type "text/plain")
+             (,(format-user (com.momoiroshikibu.database:select-one (car (routing=user-id request-path)))))))
+
+          (t
+           '(404
+             (:content-type "text/plain")
+             ("Not Found"))))))
