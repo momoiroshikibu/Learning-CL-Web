@@ -6,17 +6,18 @@
   (ql:quickload :lack-request)
   (ql:quickload :hunchentoot)
   (load (merge-pathnames (make-pathname :directory '(:relative "./utils/datetime.lisp"))))
-  (load (merge-pathnames (make-pathname :directory '(:relative "./database/database.lisp")))))
+  (load (merge-pathnames (make-pathname :directory '(:relative "./database/database.lisp"))))
+  (load (merge-pathnames (make-pathname :directory '(:relative "./controllers/user-controller.lisp")))))
 
 (in-package :cl-user)
-(defpackage com.momoiroshikibu.database.crud-web
+(defpackage com.momoiroshikibu.server
   (:use :cl
         :clack
         :com.momoiroshikibu.database)
   (:import-from :lack.request
                 :make-request
                 :request-cookies))
-(in-package :com.momoiroshikibu.database.crud-web)
+(in-package :com.momoiroshikibu.server)
 
 
 (defun format-user (user-plist)
@@ -79,15 +80,7 @@
                       (:location "/users"))))))
 
           ((path "/users/new" request-path)
-           `(200
-             (:content-type "text/html")
-             ("<h1>create new user</h1>
-<form method='POST' action='/users'>
-<input name=first-name placeholder='First Name' />
-<input name=last-name placeholder='Last Name' />
-<button>register</button>
-</form>")))
-
+           (com.momoiroshikibu.controller:users-new env))
           ((path "/users" request-path)
            `(200
              (:content-type "text/html")
