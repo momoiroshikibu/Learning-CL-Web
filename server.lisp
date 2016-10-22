@@ -5,9 +5,8 @@
   (ql:quickload :lack)
   (ql:quickload :lack-request)
   (ql:quickload :hunchentoot)
-  (load (merge-pathnames (make-pathname :directory '(:relative "./datetime.lisp"))))
-  (load (merge-pathnames (make-pathname :directory '(:relative "./database.lisp")))))
-
+  (load (merge-pathnames (make-pathname :directory '(:relative "./utils/datetime.lisp"))))
+  (load (merge-pathnames (make-pathname :directory '(:relative "./database/database.lisp")))))
 
 (in-package :cl-user)
 (defpackage com.momoiroshikibu.database.crud-web
