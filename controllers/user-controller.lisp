@@ -1,5 +1,5 @@
 (in-package :cl-user)
-(defpackage com.momoiroshikibu.controllers
+(defpackage com.momoiroshikibu.controllers.user
   (:use :cl)
   (:import-from :com.momoiroshikibu.utils
                 :read-file-into-string)
@@ -10,7 +10,7 @@
            :destroy
            :users-new
            :users-by-id))
-(in-package :com.momoiroshikibu.controllers)
+(in-package :com.momoiroshikibu.controllers.user)
 
 
 (defun string-join (string-list)

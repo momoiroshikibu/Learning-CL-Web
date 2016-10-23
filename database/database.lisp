@@ -4,7 +4,8 @@
         :dbi)
   (:import-from :com.momoiroshikibu.datetime
                 :get-current-date-in-yyyy-mm-dd-format)
-  (:export :select-multi
+  (:export :select-user-from-mail-address
+           :select-multi
            :select-one
            :insert
            :destroy))
@@ -14,6 +15,12 @@
                                 :database-name "testdb"
                                 :username "testuser"
                                 :password "password"))
+
+(defun select-user-from-mail-address (mail-address hashed-password)
+  (let* ((query (dbi:prepare *database*
+                             "select * from users where mail_address = ?"))
+         (result (dbi:execute query mail-address)))
+    (dbi:fetch result)))
 
 (defun select-multi (n)
   (let* ((query (dbi:prepare *database*

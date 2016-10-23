@@ -8,4 +8,5 @@
 (load (merge-pathnames (make-pathname :directory '(:relative "./utils/datetime.lisp"))))
 (load (merge-pathnames (make-pathname :directory '(:relative "./database/database.lisp"))))
 (load (merge-pathnames (make-pathname :directory '(:relative "./utils/file-util.lisp"))))
+(load (merge-pathnames (make-pathname :directory '(:relative "./controllers/login-controller.lisp"))))
 (load (merge-pathnames (make-pathname :directory '(:relative "./controllers/user-controller.lisp"))))

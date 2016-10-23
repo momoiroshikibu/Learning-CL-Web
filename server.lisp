@@ -32,29 +32,40 @@
   (let ((request-path (getf env :path-info)))
     (cond ((path "/users" request-path)
            (cond ((string= (getf env :request-method) "GET")
-                  (com.momoiroshikibu.controllers:users 1000))
+                  (com.momoiroshikibu.controllers.user:users 1000))
 
                  ((string= (getf env :request-method) "POST")
                   (let* ((request (lack.request:make-request env))
                          (body-parameters (lack.request:request-body-parameters request)))
-                    (com.momoiroshikibu.controllers:register
+                    (com.momoiroshikibu.controllers.user:register
                      (get-request-value body-parameters "first-name")
                      (get-request-value body-parameters "last-name")
                      (get-request-value body-parameters "mail-address")
                      (get-request-value body-parameters "password"))))))
 
           ((path "/users/new" request-path)
-           (com.momoiroshikibu.controllers:users-new))
+           (com.momoiroshikibu.controllers.user:users-new))
 
           ((path "/users/destroy" request-path)
            (let* ((request (lack.request:make-request env))
                   (body-parameters (lack.request:request-body-parameters request)))
-             (com.momoiroshikibu.controllers:destroy
+             (com.momoiroshikibu.controllers.user:destroy
               (get-request-value body-parameters "id"))))
 
           ((routing=user-id request-path)
            (let ((user-id (car (routing=user-id request-path))))
-             (com.momoiroshikibu.controllers:users-by-id user-id)))
+             (com.momoiroshikibu.controllers.user:users-by-id user-id)))
+
+
+          ((path "/login" request-path)
+           (com.momoiroshikibu.controllers.login:index))
+
+          ((path "/authenticate" request-path)
+           (let* ((request (lack.request:make-request env))
+                  (body-parameters (lack.request:request-body-parameters request)))
+             (com.momoiroshikibu.controllers.login:authenticate
+              (get-request-value body-parameters "mail-address")
+              (get-request-value body-parameters "password"))))
 
           (t
            '(404
