@@ -36,11 +36,9 @@
                  ((string= (getf env :request-method) "POST")
                   (let* ((request (lack.request:make-request env))
                          (body-parameters (lack.request:request-body-parameters request)))
-                    (com.momoiroshikibu.database:insert
+                    (com.momoiroshikibu.controllers:register
                      (get-request-value body-parameters "first-name")
-                     (get-request-value body-parameters "last-name"))
-                    `(303
-                      (:location "/users"))))))
+                     (get-request-value body-parameters "last-name"))))))
 
           ((path "/users/new" request-path)
            (com.momoiroshikibu.controllers:users-new))

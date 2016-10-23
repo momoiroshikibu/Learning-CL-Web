@@ -4,6 +4,7 @@
   (:import-from :com.momoiroshikibu.utils
                 :read-file-into-string)
   (:export :users
+           :register
            :users-new
            :users-by-id))
 (in-package :com.momoiroshikibu.controllers)
@@ -37,6 +38,11 @@
     `(200
       (:content-type "text/plain")
       (,(format-user user)))))
+
+(defun register (first-name last-name)
+  (com.momoiroshikibu.database:insert first-name last-name)
+  `(303
+    (:location "/users")))
 
 
 (defun format-user (user-plist)
