@@ -18,8 +18,8 @@
 
 (defun select-user-from-mail-address (mail-address hashed-password)
   (let* ((query (dbi:prepare *database*
-                             "select * from users where mail_address = ?"))
-         (result (dbi:execute query mail-address)))
+                             "select * from users where mail_address = ? and password_hash = ?"))
+         (result (dbi:execute query mail-address hashed-password)))
     (dbi:fetch result)))
 
 (defun select-multi (n)
