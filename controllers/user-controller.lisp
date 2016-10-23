@@ -9,26 +9,30 @@
            :users-by-id))
 (in-package :com.momoiroshikibu.controllers)
 
+
+(defun string-join (string-list)
+    (format nil "~{~A~^ ~}" string-list))
+
 (defun users-new ()
   `(200
     (:content-type "text/html")
     (,(com.momoiroshikibu.utils:read-file-into-string "views/users-new.html"))))
 
+(defvar <users-partial-template> (com.momoiroshikibu.utils:read-file-into-string "views/users-partial.html"))
+(defvar <users-page-template> (com.momoiroshikibu.utils:read-file-into-string "views/users.html"))
+
 (defun users (count)
-  (defun htmlify-user (user-plist)
-    (let ((user-id (getf user-plist :|id|))
-          (first-name (getf user-plist :|first_name|)))
-      (format nil "<a href=users/~A>~A</a>" user-id first-name)))
-
-  (defun listify-user (user-plist)
-    (format nil "<li>~A</li>" (htmlify-user user-plist)))
-
-  (let ((users (com.momoiroshikibu.database:select-multi count)))
+  (let* ((users (com.momoiroshikibu.database:select-multi count))
+         (<users-partial> (loop for row in users
+                             collect (format nil <users-partial-template>
+                                             (getf row :|id|)
+                                             (getf row :|id|)
+                                             (getf row :|last_name|)
+                                             (getf row :|first_name|))))
+         (<users-page> (format nil <users-page-template> (string-join <users-partial>))))
     `(200
       (:content-type "text/html")
-      ("<a href='/users/new'>/users/new</a>"
-       ,@(loop for row in users
-            collect (listify-user row))))))
+      (,<users-page>))))
 
 (defun users-by-id (user-id)
   (let* ((user (com.momoiroshikibu.database:select-one user-id))
