@@ -1,6 +1,38 @@
 <h1>create new user</h1>
-<form method='POST' action='/users'>
-  <input name=first-name placeholder='First Name' />
-  <input name=last-name placeholder='Last Name' />
+<form method="POST" action="/users">
+  <ul>
+    <li>
+      <label>First Name</label>
+      <input name="first-name" placeholder="First Name" />
+    </li>
+    <li>
+      <label>Last Name</label>
+      <input name="last-name" placeholder="Last Name" />
+    </li>
+    <li>
+      <label>Mail Address</label>
+      <input name="mail-address" placeholder="Mail Address" />
+    </li>
+    <li>
+      <label>Password</label>
+      <input name="password" placeholder="Password" type="password"/>
+    </li>
+  </ul>
   <button>register</button>
 </form>
+
+<style>
+ul li {
+    list-style: none;
+}
+
+li {
+  margin-top: 8px;
+}
+
+label {
+    margin-right: 8px;
+    width:100px;
+    display: block;
+}
+</style>

@@ -5,3 +5,10 @@ create table users (
     `created_at` date,
     primary key(id)
 );
+
+
+-- alter table users add `mail_address` varchar(255);
+-- alter table users add `password_hash` varchar(255);
+
+-- alter table users modify created_at date after mail_address;
+-- alter table users modify created_at varchar(255) after password_hash;

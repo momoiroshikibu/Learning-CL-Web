@@ -34,11 +34,11 @@
         row)))
 
 
-(defun insert (first-name last-name)
+(defun insert (first-name last-name mail-address password-hash)
   (let* ((query (dbi:prepare *database*
-                             "insert into users values (null, ?, ?, ?)"))
+                             "insert into users values (null, ?, ?, ?, ?, ?)"))
          (current-date (get-current-date-in-yyyy-mm-dd-format))
-         (result (dbi:execute query first-name last-name current-date)))
+         (result (dbi:execute query first-name last-name mail-address password-hash current-date)))
     (dbi:fetch result)))
 
 (defun destroy (id)

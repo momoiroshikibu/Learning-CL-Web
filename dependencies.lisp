@@ -3,6 +3,8 @@
 (ql:quickload :lack)
 (ql:quickload :lack-request)
 (ql:quickload :hunchentoot)
+(ql:quickload :ironclad)
+(load (merge-pathnames (make-pathname :directory '(:relative "./utils/string-util.lisp"))))
 (load (merge-pathnames (make-pathname :directory '(:relative "./utils/datetime.lisp"))))
 (load (merge-pathnames (make-pathname :directory '(:relative "./database/database.lisp"))))
 (load (merge-pathnames (make-pathname :directory '(:relative "./utils/file-util.lisp"))))

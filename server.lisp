@@ -33,12 +33,15 @@
     (cond ((path "/users" request-path)
            (cond ((string= (getf env :request-method) "GET")
                   (com.momoiroshikibu.controllers:users 1000))
+
                  ((string= (getf env :request-method) "POST")
                   (let* ((request (lack.request:make-request env))
                          (body-parameters (lack.request:request-body-parameters request)))
                     (com.momoiroshikibu.controllers:register
                      (get-request-value body-parameters "first-name")
-                     (get-request-value body-parameters "last-name"))))))
+                     (get-request-value body-parameters "last-name")
+                     (get-request-value body-parameters "mail-address")
+                     (get-request-value body-parameters "password"))))))
 
           ((path "/users/new" request-path)
            (com.momoiroshikibu.controllers:users-new))

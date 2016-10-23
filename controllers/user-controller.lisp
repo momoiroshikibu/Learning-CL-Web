@@ -3,6 +3,8 @@
   (:use :cl)
   (:import-from :com.momoiroshikibu.utils
                 :read-file-into-string)
+  (:import-from :com.momoiroshikibu.utils.string-util
+                :hash-password)
   (:export :users
            :register
            :destroy
@@ -45,6 +47,7 @@
           (getf user :|id|)
           (getf user :|first_name|)
           (getf user :|last_name|)
+          (getf user :|mail_address|)
           (getf user :|created_at|)
           (getf user :|id|))))
     `(200
@@ -52,22 +55,14 @@
       (,user-html))))
 
 
-(defun register (first-name last-name)
-  (com.momoiroshikibu.database:insert first-name last-name)
-  `(303
-    (:location "/users")))
+(defun register (first-name last-name mail-address password)
+  (let ((password-hash (com.momoiroshikibu.utils.string-util:hash-password password)))
+    (com.momoiroshikibu.database:insert first-name last-name mail-address password-hash)
+    `(303
+      (:location "/users"))))
 
 
 (defun destroy (id)
   (com.momoiroshikibu.database:destroy id)
   `(303
     (:location "/users")))
-
-
-(defun format-user (user-id first-name last-name created-at)
-  (format nil (com.momoiroshikibu.utils:read-file-into-string "views/user.html")
-          user-id
-          first-name
-          last-name
-          created-at
-          user-id))
