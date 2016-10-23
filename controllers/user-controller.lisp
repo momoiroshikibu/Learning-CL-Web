@@ -1,19 +1,15 @@
 (in-package :cl-user)
-(defpackage com.momoiroshikibu.controller
-  (:use :cl
-        :dbi)
+(defpackage com.momoiroshikibu.controllers
+  (:use :cl)
+  (:import-from :com.momoiroshikibu.utils
+                :read-file-into-string)
   (:export :users-new))
-(in-package :com.momoiroshikibu.controller)
+(in-package :com.momoiroshikibu.controllers)
 
-(defvar *html* (with-open-file (stream
-                 "views/users-new.html"
-                 :direction :input)
-  (let ((buffer (make-string (file-length stream))))
-    (read-sequence buffer stream)
-    buffer)))
+(defvar *html* (com.momoiroshikibu.utils:read-file-into-string "views/users-new.html"))
+(print *html*)
 
 (defun users-new (env)
   `(200
     (:content-type "text/html")
-    (,*html*))
-  )
+    (,*html*)))

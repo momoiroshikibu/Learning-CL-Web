@@ -7,7 +7,10 @@
   (ql:quickload :hunchentoot)
   (load (merge-pathnames (make-pathname :directory '(:relative "./utils/datetime.lisp"))))
   (load (merge-pathnames (make-pathname :directory '(:relative "./database/database.lisp"))))
-  (load (merge-pathnames (make-pathname :directory '(:relative "./controllers/user-controller.lisp")))))
+  (load (merge-pathnames (make-pathname :directory '(:relative "./utils/file-util.lisp"))))
+  (load (merge-pathnames (make-pathname :directory '(:relative "./controllers/user-controller.lisp"))))
+  )
+
 
 (in-package :cl-user)
 (defpackage com.momoiroshikibu.server
@@ -80,7 +83,7 @@
                       (:location "/users"))))))
 
           ((path "/users/new" request-path)
-           (com.momoiroshikibu.controller:users-new env))
+           (com.momoiroshikibu.controllers:users-new env))
           ((path "/users" request-path)
            `(200
              (:content-type "text/html")
