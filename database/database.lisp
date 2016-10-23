@@ -48,7 +48,7 @@
          (result (dbi:execute query first-name last-name mail-address password-hash current-date)))
     (dbi:fetch result)))
 
-(defun destroy (id)
+(defun destroy-by-id (id)
   (let ((query (dbi:prepare *database*
                             "delete from users where id = ?")))
     (dbi:execute query id)))

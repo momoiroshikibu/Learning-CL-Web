@@ -5,6 +5,8 @@
                 :read-file-into-string)
   (:import-from :com.momoiroshikibu.utils.string-util
                 :hash-password)
+  (:import-from :com.momoiroshikibu.database
+                :select-user-from-mail-address)
   (:export :index
            :authenticate))
 (in-package :com.momoiroshikibu.controllers.login)
@@ -12,28 +14,13 @@
 (defun index ()
   `(200
     (:content-type "text/html")
-    (,(com.momoiroshikibu.utils:read-file-into-string "views/login/login.html"))))
+    (,(read-file-into-string "views/login/login.html"))))
 
 (defun authenticate (mail-address password)
-  (let* ((expected-password-hash (com.momoiroshikibu.utils.string-util:hash-password password))
-         (user (com.momoiroshikibu.database:select-user-from-mail-address mail-address expected-password-hash)))
-    (princ mail-address)
-    (princ expected-password-hash)
-    (princ user)
+  (let* ((expected-password-hash (hash-password password))
+         (user (select-user-from-mail-address mail-address expected-password-hash)))
     (if user
         `(303
           (:location "/users"))
         `(303
           (:location "/login")))))
-
-
-;; (defun authenticate (mail-address password)
-;;   (let ((user (com.momoiroshikibu.database:select-user-from-mail-address mail-address))
-;;         (expected-password-hash (com.momoiroshikibu.utils.string-util:hash-password password)))
-;;     (if user
-;;         (let (actual-password-hash (getf user :|password_hash|))
-;;           (if (eq expected-password-hash actual-password-hash)
-;;               `(303
-;;                 (:location "/"))
-;;               `(303
-;;                 (:location "/login")))))))

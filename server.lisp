@@ -2,8 +2,15 @@
 (load (merge-pathnames (make-pathname :directory '(:relative "./dependencies.lisp"))))
 (defpackage com.momoiroshikibu.server
   (:use :cl
-        :clack
-        :com.momoiroshikibu.database)
+        :clack)
+  (:import-from :com.momoiroshikibu.controllers.user
+                :users-new
+                :users
+                :register
+                :destroy)
+  (:import-from :com.momoiroshikibu.controllers.login
+                :index
+                :authenticate)
   (:import-from :lack.request
                 :make-request
                 :request-cookies))
@@ -32,24 +39,24 @@
   (let ((request-path (getf env :path-info)))
     (cond ((path "/users" request-path)
            (cond ((string= (getf env :request-method) "GET")
-                  (com.momoiroshikibu.controllers.user:users 1000))
+                  (users 1000))
 
                  ((string= (getf env :request-method) "POST")
                   (let* ((request (lack.request:make-request env))
                          (body-parameters (lack.request:request-body-parameters request)))
-                    (com.momoiroshikibu.controllers.user:register
+                    (register
                      (get-request-value body-parameters "first-name")
                      (get-request-value body-parameters "last-name")
                      (get-request-value body-parameters "mail-address")
                      (get-request-value body-parameters "password"))))))
 
           ((path "/users/new" request-path)
-           (com.momoiroshikibu.controllers.user:users-new))
+           (users-new))
 
           ((path "/users/destroy" request-path)
            (let* ((request (lack.request:make-request env))
                   (body-parameters (lack.request:request-body-parameters request)))
-             (com.momoiroshikibu.controllers.user:destroy
+             (destroy
               (get-request-value body-parameters "id"))))
 
           ((routing=user-id request-path)
@@ -58,12 +65,12 @@
 
 
           ((path "/login" request-path)
-           (com.momoiroshikibu.controllers.login:index))
+           (index))
 
           ((path "/authenticate" request-path)
            (let* ((request (lack.request:make-request env))
                   (body-parameters (lack.request:request-body-parameters request)))
-             (com.momoiroshikibu.controllers.login:authenticate
+             (authenticate
               (get-request-value body-parameters "mail-address")
               (get-request-value body-parameters "password"))))
 
