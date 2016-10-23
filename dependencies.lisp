@@ -2,6 +2,8 @@
 (ql:quickload :clack)
 (ql:quickload :lack)
 (ql:quickload :lack-request)
+(ql:quickload :lack-middleware-session)
+(ql:quickload :lack-middleware-accesslog)
 (ql:quickload :hunchentoot)
 (ql:quickload :ironclad)
 (load (merge-pathnames (make-pathname :directory '(:relative "./utils/string-util.lisp"))))
