@@ -9,13 +9,10 @@
            :users-by-id))
 (in-package :com.momoiroshikibu.controllers)
 
-(defvar *html* (com.momoiroshikibu.utils:read-file-into-string "views/users-new.html"))
-(print *html*)
-
 (defun users-new ()
   `(200
     (:content-type "text/html")
-    (,*html*)))
+    (,(com.momoiroshikibu.utils:read-file-into-string "views/users-new.html"))))
 
 (defun users (count)
   (defun htmlify-user (user-plist)
@@ -34,10 +31,14 @@
             collect (listify-user row))))))
 
 (defun users-by-id (user-id)
-  (let ((user (com.momoiroshikibu.database:select-one user-id)))
+  (let* ((user (com.momoiroshikibu.database:select-one user-id))
+         (user-html (format-user (getf user :|id|)
+                                 (getf user :|first_name|)
+                                 (getf user :|last_name|)
+                                 (getf user :|created_at|))))
     `(200
-      (:content-type "text/plain")
-      (,(format-user user)))))
+      (:content-type "text/html")
+      (,user-html))))
 
 (defun register (first-name last-name)
   (com.momoiroshikibu.database:insert first-name last-name)
@@ -45,9 +46,9 @@
     (:location "/users")))
 
 
-(defun format-user (user-plist)
-  (format nil "ID: ~A~&FirstName: ~A~&LastName: ~A~&CreatedAt: ~A~&"
-          (getf user-plist :|id|)
-          (getf user-plist :|first_name|)
-          (getf user-plist :|last_name|)
-          (getf user-plist :|created_at|)))
+(defun format-user (user-id first-name last-name created-at)
+  (format nil (com.momoiroshikibu.utils:read-file-into-string "views/user.html")
+          user-id
+          first-name
+          last-name
+          created-at))
