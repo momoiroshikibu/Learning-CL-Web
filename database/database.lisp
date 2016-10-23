@@ -6,7 +6,8 @@
                 :get-current-date-in-yyyy-mm-dd-format)
   (:export :select-multi
            :select-one
-           :insert))
+           :insert
+           :destroy))
 (in-package :com.momoiroshikibu.database)
 
 (defvar *database* (dbi:connect :mysql
@@ -39,3 +40,8 @@
          (current-date (get-current-date-in-yyyy-mm-dd-format))
          (result (dbi:execute query first-name last-name current-date)))
     (dbi:fetch result)))
+
+(defun destroy (id)
+  (let ((query (dbi:prepare *database*
+                            "delete from users where id = ?")))
+    (dbi:execute query id)))

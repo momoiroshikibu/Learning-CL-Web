@@ -5,6 +5,7 @@
                 :read-file-into-string)
   (:export :users
            :register
+           :destroy
            :users-new
            :users-by-id))
 (in-package :com.momoiroshikibu.controllers)
@@ -13,13 +14,16 @@
 (defun string-join (string-list)
     (format nil "~{~A~^ ~}" string-list))
 
+(defvar <users-partial-template> (com.momoiroshikibu.utils:read-file-into-string "views/users-partial.html"))
+(defvar <users-page-template> (com.momoiroshikibu.utils:read-file-into-string "views/users.html"))
+
+
+
 (defun users-new ()
   `(200
     (:content-type "text/html")
     (,(com.momoiroshikibu.utils:read-file-into-string "views/users-new.html"))))
 
-(defvar <users-partial-template> (com.momoiroshikibu.utils:read-file-into-string "views/users-partial.html"))
-(defvar <users-page-template> (com.momoiroshikibu.utils:read-file-into-string "views/users.html"))
 
 (defun users (count)
   (let* ((users (com.momoiroshikibu.database:select-multi count))
@@ -34,18 +38,28 @@
       (:content-type "text/html")
       (,<users-page>))))
 
+
 (defun users-by-id (user-id)
   (let* ((user (com.momoiroshikibu.database:select-one user-id))
-         (user-html (format-user (getf user :|id|)
-                                 (getf user :|first_name|)
-                                 (getf user :|last_name|)
-                                 (getf user :|created_at|))))
+         (user-html (format nil (com.momoiroshikibu.utils:read-file-into-string "views/user.html")
+          (getf user :|id|)
+          (getf user :|first_name|)
+          (getf user :|last_name|)
+          (getf user :|created_at|)
+          (getf user :|id|))))
     `(200
       (:content-type "text/html")
       (,user-html))))
 
+
 (defun register (first-name last-name)
   (com.momoiroshikibu.database:insert first-name last-name)
+  `(303
+    (:location "/users")))
+
+
+(defun destroy (id)
+  (com.momoiroshikibu.database:destroy id)
   `(303
     (:location "/users")))
 
@@ -55,4 +69,5 @@
           user-id
           first-name
           last-name
-          created-at))
+          created-at
+          user-id))

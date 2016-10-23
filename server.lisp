@@ -43,6 +43,12 @@
           ((path "/users/new" request-path)
            (com.momoiroshikibu.controllers:users-new))
 
+          ((path "/users/destroy" request-path)
+           (let* ((request (lack.request:make-request env))
+                  (body-parameters (lack.request:request-body-parameters request)))
+             (com.momoiroshikibu.controllers:destroy
+              (get-request-value body-parameters "id"))))
+
           ((routing=user-id request-path)
            (let ((user-id (car (routing=user-id request-path))))
              (com.momoiroshikibu.controllers:users-by-id user-id)))
