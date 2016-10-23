@@ -5,14 +5,15 @@
   (:export :users-new))
 (in-package :com.momoiroshikibu.controller)
 
+(defvar *html* (with-open-file (stream
+                 "views/users-new.html"
+                 :direction :input)
+  (let ((buffer (make-string (file-length stream))))
+    (read-sequence buffer stream)
+    buffer)))
 
 (defun users-new (env)
   `(200
     (:content-type "text/html")
-    ("<h1>create new user</h1>
-<form method='POST' action='/users'>
-<input name=first-name placeholder='First Name' />
-<input name=last-name placeholder='Last Name' />
-<button>register</button>
-</form>"))
+    (,*html*))
   )
