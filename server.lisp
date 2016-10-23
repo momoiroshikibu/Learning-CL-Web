@@ -1,18 +1,5 @@
 (in-package :cl-user)
-(progn ;;init forms
-  (ql:quickload :dbi)
-  (ql:quickload :clack)
-  (ql:quickload :lack)
-  (ql:quickload :lack-request)
-  (ql:quickload :hunchentoot)
-  (load (merge-pathnames (make-pathname :directory '(:relative "./utils/datetime.lisp"))))
-  (load (merge-pathnames (make-pathname :directory '(:relative "./database/database.lisp"))))
-  (load (merge-pathnames (make-pathname :directory '(:relative "./utils/file-util.lisp"))))
-  (load (merge-pathnames (make-pathname :directory '(:relative "./controllers/user-controller.lisp"))))
-  )
-
-
-(in-package :cl-user)
+(load (merge-pathnames (make-pathname :directory '(:relative "./dependencies.lisp"))))
 (defpackage com.momoiroshikibu.server
   (:use :cl
         :clack
@@ -21,7 +8,6 @@
                 :make-request
                 :request-cookies))
 (in-package :com.momoiroshikibu.server)
-
 
 (defun format-user (user-plist)
   (format nil "ID: ~A~&FirstName: ~A~&LastName: ~A~&CreatedAt: ~A~&"
