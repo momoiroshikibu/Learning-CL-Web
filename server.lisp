@@ -92,3 +92,25 @@
 (setf *app* (funcall *lack-middleware-session* *app*))
 (setf *app* (funcall *lack-middleware-accesslog* *app*))
 
+
+(defvar *mw*
+  (lambda (app)
+    (lambda (env)
+      ;; preprocessing
+      (let* ((uri (getf env :request-uri))
+             (is-authenticate-p (equal uri "/authenticate")))
+        (print (getf env :request-method))
+        (let ((res (funcall app env)))
+          ;; postprocessing
+          (if is-authenticate-p
+              (print "is-authenticate-p")
+              (print "nooooo"))
+          (princ res)
+          (print (getf env :request-method))
+          (print (getf env :headers))
+          res))
+      )))
+
+;; getting a wrapped app
+(funcall *mw* *app*)
+
