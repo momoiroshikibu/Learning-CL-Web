@@ -12,6 +12,7 @@
   (:import-from :com.momoiroshikibu.controllers.user
                 :users-new
                 :users
+                :users-by-id
                 :register
                 :destroy)
   (:import-from :com.momoiroshikibu.controllers.login
@@ -70,7 +71,7 @@
 
             ((routing=user-id request-path)
              (let ((user-id (car (routing=user-id request-path))))
-               (com.momoiroshikibu.controllers.user:users-by-id user-id)))
+               (users-by-id user-id)))
 
 
             ((path "/login" request-path)
