@@ -21,26 +21,27 @@
 (defun string-join (string-list)
     (format nil "~{~A~^ ~}" string-list))
 
-(defvar <users-partial-template> (read-file-into-string "views/users-partial.html"))
-(defvar <users-page-template> (read-file-into-string "views/users.html"))
-
+(defparameter *<users-partial-template>* (read-file-into-string "views/users-partial.html"))
+(defparameter *<users-page-template>* (read-file-into-string "views/users.html"))
+(defparameter *<users-new>* (read-file-into-string "views/users-new.html"))
+(defparameter *<user>* (read-file-into-string "views/user.html"))
 
 
 (defun users-new ()
   `(200
     (:content-type "text/html")
-    (,(read-file-into-string "views/users-new.html"))))
+    (,*<users-new>*)))
 
 
 (defun users (count)
   (let* ((users (select-multi count))
          (<users-partial> (loop for row in users
-                             collect (format nil <users-partial-template>
+                             collect (format nil *<users-partial-template>*
                                              (getf row :|id|)
                                              (getf row :|id|)
                                              (getf row :|last_name|)
                                              (getf row :|first_name|))))
-         (<users-page> (format nil <users-page-template> (string-join <users-partial>))))
+         (<users-page> (format nil *<users-page-template>* (string-join <users-partial>))))
     `(200
       (:content-type "text/html")
       (,<users-page>))))
@@ -48,7 +49,7 @@
 
 (defun users-by-id (user-id)
   (let* ((user (select-one user-id))
-         (user-html (format nil (read-file-into-string "views/user.html")
+         (user-html (format nil *<user>*
                             (getf user :|id|)
                             (getf user :|first_name|)
                             (getf user :|last_name|)

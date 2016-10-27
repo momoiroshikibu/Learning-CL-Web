@@ -108,8 +108,7 @@
           (princ res)
           (print (getf env :request-method))
           (print (getf env :headers))
-          res))
-      )))
+          res)))))
 
 ;; getting a wrapped app
 (funcall *mw* *app*)

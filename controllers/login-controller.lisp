@@ -11,10 +11,12 @@
            :authenticate))
 (in-package :com.momoiroshikibu.controllers.login)
 
+(defparameter *<login-html>* (read-file-into-string "views/login/login.html"))
+
 (defun index ()
   `(200
     (:content-type "text/html")
-    (,(read-file-into-string "views/login/login.html"))))
+    (,*<login-html>*)))
 
 (defun authenticate (mail-address password)
   (let* ((expected-password-hash (hash-password password))
