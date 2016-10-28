@@ -44,54 +44,52 @@
 
 
 
-(defparameter *app*
-  (lambda (env)
-    (let ((request-path (getf env :path-info)))
-      (cond ((path "/users" request-path)
-             (cond ((string= (getf env :request-method) "GET")
-                    (users 1000))
+(defun app (env)
+  (let ((request-path (getf env :path-info)))
+    (cond ((path "/users" request-path)
+           (cond ((string= (getf env :request-method) "GET")
+                  (users 1000))
+                 ((string= (getf env :request-method) "POST")
+                  (let* ((request (lack.request:make-request env))
+                         (body-parameters (lack.request:request-body-parameters request)))
+                    (register
+                     (get-request-value body-parameters "first-name")
+                     (get-request-value body-parameters "last-name")
+                     (get-request-value body-parameters "mail-address")
+                     (get-request-value body-parameters "password"))))))
 
-                   ((string= (getf env :request-method) "POST")
-                    (let* ((request (lack.request:make-request env))
-                           (body-parameters (lack.request:request-body-parameters request)))
-                      (register
-                       (get-request-value body-parameters "first-name")
-                       (get-request-value body-parameters "last-name")
-                       (get-request-value body-parameters "mail-address")
-                       (get-request-value body-parameters "password"))))))
+          ((path "/users/new" request-path)
+           (users-new))
 
-            ((path "/users/new" request-path)
-             (users-new))
+          ((path "/users/destroy" request-path)
+           (let* ((request (lack.request:make-request env))
+                  (body-parameters (lack.request:request-body-parameters request)))
+             (destroy
+              (get-request-value body-parameters "id"))))
 
-            ((path "/users/destroy" request-path)
-             (let* ((request (lack.request:make-request env))
-                    (body-parameters (lack.request:request-body-parameters request)))
-               (destroy
-                (get-request-value body-parameters "id"))))
-
-            ((routing=user-id request-path)
-             (let ((user-id (car (routing=user-id request-path))))
-               (users-by-id user-id)))
+          ((routing=user-id request-path)
+           (let ((user-id (car (routing=user-id request-path))))
+             (users-by-id user-id)))
 
 
-            ((path "/login" request-path)
-             (index))
+          ((path "/login" request-path)
+           (index))
 
-            ((path "/authenticate" request-path)
-             (let* ((request (lack.request:make-request env))
-                    (body-parameters (lack.request:request-body-parameters request)))
-               (authenticate
-                (get-request-value body-parameters "mail-address")
-                (get-request-value body-parameters "password"))))
+          ((path "/authenticate" request-path)
+           (let* ((request (lack.request:make-request env))
+                  (body-parameters (lack.request:request-body-parameters request)))
+             (authenticate
+              (get-request-value body-parameters "mail-address")
+              (get-request-value body-parameters "password"))))
 
-            (t
-             '(404
-               (:content-type "text/html")
-               ("<h1>404 Not Found</h1>")))))))
+          (t
+           '(404
+             (:content-type "text/html")
+             ("<h1>404 Not Found</h1>"))))))
 
 
-(setf *app* (funcall *lack-middleware-session* *app*))
-(setf *app* (funcall *lack-middleware-accesslog* *app*))
+(setf *app* (funcall *lack-middleware-session* #'app))
+(setf *app* (funcall *lack-middleware-accesslog* #'app))
 
 
 (defvar *mw*
@@ -106,7 +104,7 @@
           (if is-authenticate-p
               (print "is-authenticate-p")
               (print "nooooo"))
-          (princ res)
+          (print (getf env :lack.session))
           (print (getf env :request-method))
           (print (getf env :headers))
           res)))))
