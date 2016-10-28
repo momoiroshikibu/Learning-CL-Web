@@ -30,14 +30,14 @@
                               (list user-id)))
 
 (defun get-request-value (pairs key)
-  (defun iter (pairs key)
-    (let ((pair (car pairs)))
-      (if (null pair)
-          nil
-          (if (string= key (car pair))
-              (cdr pair)
-              (iter (cdr pairs) key)))))
-  (iter pairs key))
+  (labels ((get-value (pairs key)
+             (let ((pair (car pairs)))
+               (if (null pair)
+                   nil
+                   (if (equal key (car pair))
+                       (cdr pair)
+                       (get-value (cdr pairs) key))))))
+    (get-value pairs key)))
 
 (defmacro path (pattern request-path)
   `(string= ,pattern ,request-path))
