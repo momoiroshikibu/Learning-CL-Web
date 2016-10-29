@@ -8,6 +8,9 @@
 (in-package :com.momoiroshikibu.middlewares.auth-handler-middleware)
 
 
+(defun get-login-user (env)
+  (gethash :login-user (getf env :lack.session)))
+
 (defun auth-handler-middleware (app)
   (lambda (env)
     (if (or (equal "/authenticate" (getf env :path-info))
@@ -16,5 +19,3 @@
         (login-page))))
 
 
-(defun get-login-user (env)
-  (gethash :login-user (getf env :lack.session)))
