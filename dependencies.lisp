@@ -12,3 +12,4 @@
 (load (merge-pathnames (make-pathname :directory '(:relative "./utils/file-util.lisp"))))
 (load (merge-pathnames (make-pathname :directory '(:relative "./controllers/login-controller.lisp"))))
 (load (merge-pathnames (make-pathname :directory '(:relative "./controllers/user-controller.lisp"))))
+(load (merge-pathnames (make-pathname :directory '(:relative "./middlewares/auth-handler-middleware.lisp"))))

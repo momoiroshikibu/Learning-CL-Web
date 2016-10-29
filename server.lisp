@@ -21,6 +21,8 @@
   (:import-from :com.momoiroshikibu.controllers.login
                 :login-page
                 :authenticate)
+  (:import-from :com.momoiroshikibu.middlewares.auth-handler-middleware
+                :auth-handler-middleware)
   (:import-from :lack.request
                 :make-request
                 :request-cookies))
@@ -44,7 +46,6 @@
 
 (defmacro path (pattern request-path)
   `(string= ,pattern ,request-path))
-
 
 
 (defun app (env)
@@ -76,14 +77,7 @@
 
 
           ((path "/login" request-path)
-           (let ((session (getf env :lack.session)))
-             (print "login")
-;             (setf (gethash 'test session) 20)
-             (print (maphash #'(lambda (key value)
-                          (format t "~A => ~A~%" key value))
-                      session))
-             (print session))
-           (index))
+           (login-page))
 
           ((path "/authenticate" request-path)
            (let* ((request (lack.request:make-request env))
@@ -97,30 +91,7 @@
              (:content-type "text/html")
              ("<h1>404 Not Found</h1>"))))))
 
-
-(defun print-hash (hash)
-  (maphash #'(lambda (key value)
-               (format t "~A => ~A~%" key value))
-           hash))
-
-
-(defun get-login-user (env)
-  (let ((session (getf env :lack.session)))
-    (gethash :login-user session)))
-
-;; (defun authentication-checker ())
-
+;; app
 (lack:builder :session
-              (lambda (app)
-                (lambda (env)
-                  (if (equal "/authenticate" (getf env :path-info))
-                      (let* ((request (lack.request:make-request env))
-                             (body-parameters (lack.request:request-body-parameters request))
-                             (mail-address (get-request-value body-parameters "mail-address"))
-                             (password (get-request-value body-parameters "password")))
-                        (authenticate env mail-address password))
-                      (let ((login-user (get-login-user env)))
-                        (if login-user
-                            (funcall app env)
-                            (login-page))))))
+              #'auth-handler-middleware
               #'app)
