@@ -49,6 +49,7 @@
 
 (defun users-by-id (user-id)
   (let* ((user (select-one user-id))
+;         (session (getf env :lack.session))
          (user-html (format nil *<user>*
                             (getf user :|id|)
                             (getf user :|first_name|)

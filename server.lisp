@@ -3,6 +3,9 @@
 (defpackage com.momoiroshikibu.server
   (:use :cl)
 
+  (:import-from :lack.builder
+                :builder)
+
   (:import-from :lack.middleware.session
                 :*lack-middleware-session*)
 
@@ -16,7 +19,7 @@
                 :register
                 :destroy)
   (:import-from :com.momoiroshikibu.controllers.login
-                :index
+                :login-page
                 :authenticate)
   (:import-from :lack.request
                 :make-request
@@ -73,14 +76,21 @@
 
 
           ((path "/login" request-path)
+           (let ((session (getf env :lack.session)))
+             (print "login")
+;             (setf (gethash 'test session) 20)
+             (print (maphash #'(lambda (key value)
+                          (format t "~A => ~A~%" key value))
+                      session))
+             (print session))
            (index))
 
           ((path "/authenticate" request-path)
            (let* ((request (lack.request:make-request env))
-                  (body-parameters (lack.request:request-body-parameters request)))
-             (authenticate
-              (get-request-value body-parameters "mail-address")
-              (get-request-value body-parameters "password"))))
+                  (body-parameters (lack.request:request-body-parameters request))
+                  (mail-address (get-request-value body-parameters "mail-address"))
+                  (password (get-request-value body-parameters "password")))
+             (authenticate env mail-address password)))
 
           (t
            '(404
@@ -88,27 +98,29 @@
              ("<h1>404 Not Found</h1>"))))))
 
 
-(setf *app* (funcall *lack-middleware-session* #'app))
-(setf *app* (funcall *lack-middleware-accesslog* #'app))
+(defun print-hash (hash)
+  (maphash #'(lambda (key value)
+               (format t "~A => ~A~%" key value))
+           hash))
 
 
-(defvar *mw*
-  (lambda (app)
-    (lambda (env)
-      ;; preprocessing
-      (let* ((uri (getf env :request-uri))
-             (is-authenticate-p (equal uri "/authenticate")))
-        (print (getf env :request-method))
-        (let ((res (funcall app env)))
-          ;; postprocessing
-          (if is-authenticate-p
-              (print "is-authenticate-p")
-              (print "nooooo"))
-          (print (getf env :lack.session))
-          (print (getf env :request-method))
-          (print (getf env :headers))
-          res)))))
+(defun get-login-user (env)
+  (let ((session (getf env :lack.session)))
+    (gethash :login-user session)))
 
-;; getting a wrapped app
-(funcall *mw* *app*)
+;; (defun authentication-checker ())
 
+(lack:builder :session
+              (lambda (app)
+                (lambda (env)
+                  (if (equal "/authenticate" (getf env :path-info))
+                      (let* ((request (lack.request:make-request env))
+                             (body-parameters (lack.request:request-body-parameters request))
+                             (mail-address (get-request-value body-parameters "mail-address"))
+                             (password (get-request-value body-parameters "password")))
+                        (authenticate env mail-address password))
+                      (let ((login-user (get-login-user env)))
+                        (if login-user
+                            (funcall app env)
+                            (login-page))))))
+              #'app)
