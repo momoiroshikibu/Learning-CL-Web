@@ -8,7 +8,8 @@
   (:import-from :com.momoiroshikibu.database
                 :select-user-from-mail-address)
   (:export :login-page
-           :authenticate))
+           :authenticate
+           :logout))
 (in-package :com.momoiroshikibu.controllers.login)
 
 (defparameter *<login-html>* (read-file-into-string "views/login/login.html"))
@@ -22,14 +23,17 @@
   (print mail-address)
   (let* ((expected-password-hash (hash-password password))
          (user (select-user-from-mail-address mail-address expected-password-hash)))
-    (print "authenticate")
-    (print user)
     (if user
         (progn
           (setf (gethash :login-user (getf env :lack.session)) user)
-          (print "authenticate")
           (print (gethash :login-user (getf env :lack.session)))
           `(303
             (:location "/users")))
         `(303
           (:location "/login")))))
+
+(defun logout (env)
+  (let ((options (getf env :lack.session.options)))
+    (setf (getf options :expire) t))
+  `(303
+    (:location "/login")))

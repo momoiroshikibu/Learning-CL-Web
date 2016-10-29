@@ -20,7 +20,8 @@
                 :destroy)
   (:import-from :com.momoiroshikibu.controllers.login
                 :login-page
-                :authenticate)
+                :authenticate
+                :logout)
   (:import-from :com.momoiroshikibu.middlewares.auth-handler-middleware
                 :auth-handler-middleware)
   (:import-from :lack.request
@@ -85,6 +86,9 @@
                   (mail-address (get-request-value body-parameters "mail-address"))
                   (password (get-request-value body-parameters "password")))
              (authenticate env mail-address password)))
+
+          ((path "/logout" request-path)
+           (logout env))
 
           (t
            '(404
