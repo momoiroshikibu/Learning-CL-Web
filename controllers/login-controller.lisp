@@ -5,7 +5,7 @@
                 :read-file-into-string)
   (:import-from :com.momoiroshikibu.utils.string-util
                 :hash-password)
-  (:import-from :com.momoiroshikibu.database
+  (:import-from :com.momoiroshikibu.repositories.user
                 :select-user-from-mail-address)
   (:export :login-page
            :authenticate

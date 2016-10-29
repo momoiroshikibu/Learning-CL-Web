@@ -9,7 +9,7 @@
 (load (merge-pathnames (make-pathname :directory '(:relative "./utils/string-util.lisp"))))
 (load (merge-pathnames (make-pathname :directory '(:relative "./utils/datetime.lisp"))))
 (load (merge-pathnames (make-pathname :directory '(:relative "./database/connection.lisp"))))
-(load (merge-pathnames (make-pathname :directory '(:relative "./database/database.lisp"))))
+(load (merge-pathnames (make-pathname :directory '(:relative "./repositories/user-repository.lisp"))))
 (load (merge-pathnames (make-pathname :directory '(:relative "./utils/file-util.lisp"))))
 (load (merge-pathnames (make-pathname :directory '(:relative "./controllers/login-controller.lisp"))))
 (load (merge-pathnames (make-pathname :directory '(:relative "./controllers/user-controller.lisp"))))
