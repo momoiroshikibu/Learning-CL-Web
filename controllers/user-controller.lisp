@@ -7,10 +7,10 @@
                 :hash-password
                 :join-into-string)
   (:import-from :com.momoiroshikibu.repositories.user
-                :select-multi
-                :select-one
-                :insert
-                :destroy-by-id)
+                :get-users
+                :get-user-by-id
+                :create-user
+                :destroy-user-by-id)
   (:export :users
            :register
            :destroy
@@ -32,7 +32,7 @@
 
 
 (defun users (count)
-  (let* ((users (select-multi count))
+  (let* ((users (get-users count))
          (<users-partial> (loop for row in users
                              collect (format nil *<users-partial-template>*
                                              (getf row :|id|)
@@ -46,7 +46,7 @@
 
 
 (defun users-by-id (user-id)
-  (let* ((user (select-one user-id))
+  (let* ((user (get-user-by-id user-id))
          (user-html (format nil *<user>*
                             (getf user :|id|)
                             (getf user :|first_name|)
@@ -61,12 +61,12 @@
 
 (defun register (first-name last-name mail-address password)
   (let ((password-hash (hash-password password)))
-    (insert first-name last-name mail-address password-hash)
+    (create-user first-name last-name mail-address password-hash)
     `(303
       (:location "/users"))))
 
 
 (defun destroy (id)
-  (destroy-by-id id)
+  (destroy-user-by-id id)
   `(303
     (:location "/users")))

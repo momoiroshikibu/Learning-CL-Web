@@ -6,7 +6,7 @@
   (:import-from :com.momoiroshikibu.utils.string-util
                 :hash-password)
   (:import-from :com.momoiroshikibu.repositories.user
-                :select-user-from-mail-address)
+                :get-user-from-mail-address)
   (:export :login-page
            :authenticate
            :logout))
@@ -21,7 +21,7 @@
 
 (defun authenticate (env mail-address password)
   (let* ((expected-password-hash (hash-password password))
-         (user (select-user-from-mail-address mail-address expected-password-hash)))
+         (user (get-user-from-mail-address mail-address expected-password-hash)))
     (if user
         (progn
           (setf (gethash :login-user (getf env :lack.session)) user)
