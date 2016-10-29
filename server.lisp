@@ -18,6 +18,8 @@
                 :users-by-id
                 :register
                 :destroy)
+  (:import-from :com.momoiroshikibu.controllers.location
+                :index)
   (:import-from :com.momoiroshikibu.controllers.login
                 :login-page
                 :authenticate
@@ -89,6 +91,9 @@
 
           ((path "/logout" request-path)
            (logout env))
+
+          ((path "/locations" request-path)
+           (index))
 
           (t
            '(404
