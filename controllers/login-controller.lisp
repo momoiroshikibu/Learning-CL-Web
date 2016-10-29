@@ -20,7 +20,6 @@
     (,*<login-html>*)))
 
 (defun authenticate (env mail-address password)
-  (print mail-address)
   (let* ((expected-password-hash (hash-password password))
          (user (select-user-from-mail-address mail-address expected-password-hash)))
     (if user
