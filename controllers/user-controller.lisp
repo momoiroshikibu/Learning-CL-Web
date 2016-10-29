@@ -4,7 +4,8 @@
   (:import-from :com.momoiroshikibu.utils
                 :read-file-into-string)
   (:import-from :com.momoiroshikibu.utils.string-util
-                :hash-password)
+                :hash-password
+                :join-into-string)
   (:import-from :com.momoiroshikibu.repositories.user
                 :select-multi
                 :select-one
@@ -17,9 +18,6 @@
            :users-by-id))
 (in-package :com.momoiroshikibu.controllers.user)
 
-
-(defun string-join (string-list)
-    (format nil "~{~A~^ ~}" string-list))
 
 (defparameter *<users-partial-template>* (read-file-into-string "views/users-partial.html"))
 (defparameter *<users-page-template>* (read-file-into-string "views/users.html"))
@@ -41,7 +39,7 @@
                                              (getf row :|id|)
                                              (getf row :|last_name|)
                                              (getf row :|first_name|))))
-         (<users-page> (format nil *<users-page-template>* (string-join <users-partial>))))
+         (<users-page> (format nil *<users-page-template>* (join-into-string <users-partial>))))
     `(200
       (:content-type "text/html")
       (,<users-page>))))
@@ -49,7 +47,6 @@
 
 (defun users-by-id (user-id)
   (let* ((user (select-one user-id))
-;         (session (getf env :lack.session))
          (user-html (format nil *<user>*
                             (getf user :|id|)
                             (getf user :|first_name|)
