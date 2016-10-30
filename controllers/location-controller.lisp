@@ -20,6 +20,10 @@
 (defun location-by-id (id)
   (let* ((location (get-location-by-id id))
          ({location} (to-json location)))
-    `(200
-      (:content-type "application/json")
-      (,{location}))))
+    (if location
+        `(200
+          (:content-type "application/json")
+          (,{location}))
+        '(404
+          (:content-type "application/json")
+          ("null")))))
