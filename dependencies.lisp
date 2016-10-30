@@ -6,6 +6,8 @@
 (ql:quickload :lack-middleware-accesslog)
 (ql:quickload :hunchentoot)
 (ql:quickload :ironclad)
+(ql:quickload :jonathan)
+
 
 (defmacro load-file (file-path)
   `(load (merge-pathnames (make-pathname :directory '(:relative ,file-path)))))
@@ -14,6 +16,7 @@
 (load-file "./utils/datetime.lisp")
 (load-file "./database/connection.lisp")
 (load-file "./repositories/user-repository.lisp")
+(load-file "./repositories/location-repository.lisp")
 (load-file "./utils/file-util.lisp")
 (load-file "./controllers/login-controller.lisp")
 (load-file "./controllers/user-controller.lisp")
