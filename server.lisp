@@ -32,10 +32,10 @@
 (in-package :com.momoiroshikibu.server)
 
 
-(defun routing=user-id (path)
-  (ppcre:register-groups-bind (user-id)
-                              ("/users/([0-9]+)" path :sharedp t)
-                              (list user-id)))
+(defun routing-by-id (regex path)
+  (ppcre:register-groups-bind (id)
+                              (regex path :sharedp t)
+                              (list id)))
 
 (defun get-request-value (pairs key)
   (labels ((get-value (pairs key)
@@ -50,6 +50,12 @@
 (defmacro path (pattern request-path)
   `(string= ,pattern ,request-path))
 
+(defmacro path-by-id (regex controller)
+  (let ((id (gensym)))
+    `(let ((,id (routing-by-id ,regex request-path)))
+     (if ,id
+         (apply ,controller ,id)
+         nil))))
 
 (defun app (env)
   (let ((request-path (getf env :path-info)))
@@ -74,10 +80,8 @@
              (destroy
               (get-request-value body-parameters "id"))))
 
-          ((routing=user-id request-path)
-           (let ((user-id (car (routing=user-id request-path))))
-             (users-by-id user-id)))
 
+          ((path-by-id "/users/([0-9]+)" #'users-by-id))
 
           ((path "/login" request-path)
            (login-page))
