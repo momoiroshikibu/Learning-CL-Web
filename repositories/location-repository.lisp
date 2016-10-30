@@ -7,6 +7,7 @@
   (:import-from :com.momoiroshikibu.datetime
                 :get-current-date-in-yyyy-mm-dd-format)
   (:export :get-locations
+           :get-location-by-id
            :create-location
            :destroy-location-by-id))
 (in-package :com.momoiroshikibu.repositories.location)
@@ -16,6 +17,12 @@
   (let* ((query (dbi:prepare *connection*
                              "select * from locations limit ?"))
          (result (dbi:execute query limit)))
+    (dbi:fetch result)))
+
+(defun get-location-by-id (id)
+  (let* ((query (dbi:prepare *connection*
+                             "select * from locations where id = ?"))
+         (result (dbi:execute query id)))
     (dbi:fetch result)))
 
 
