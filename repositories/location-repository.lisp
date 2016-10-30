@@ -26,4 +26,7 @@
          (result (dbi:execute query lat lng current-date user-id)))
     (dbi:fetch result)))
 
-(defun destroy-location-by-id ())
+(defun destroy-location-by-id (id)
+  (let ((query (dbi:prepare *connection*
+                            "delete from locations where id = ?")))
+    (dbi:execute query id)))
