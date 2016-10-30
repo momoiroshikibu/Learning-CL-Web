@@ -19,7 +19,8 @@
                 :register
                 :destroy)
   (:import-from :com.momoiroshikibu.controllers.location
-                :index)
+                :index
+                :location-by-id)
   (:import-from :com.momoiroshikibu.controllers.login
                 :login-page
                 :authenticate
@@ -98,6 +99,8 @@
 
           ((path "/locations" request-path)
            (index))
+
+          ((path-by-id "/locations/([0-9]+)" #'location-by-id))
 
           (t
            '(404

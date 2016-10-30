@@ -2,7 +2,8 @@
 (defpackage com.momoiroshikibu.controllers.location
   (:use :cl)
   (:import-from :com.momoiroshikibu.repositories.location
-                :get-locations)
+                :get-locations
+                :get-location-by-id)
   (:import-from :jonathan
                 :to-json)
   (:export :index))
