@@ -15,7 +15,6 @@
 (defparameter *<login-html>* (read-file-into-string "views/login/login.html"))
 
 (defun login-page (query-string)
-  (print query-string)
   `(200
     (:content-type "text/html")
     (,(format nil *<login-html>* query-string))))
