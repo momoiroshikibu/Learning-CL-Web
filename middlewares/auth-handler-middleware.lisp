@@ -13,9 +13,11 @@
 
 (defun auth-handler-middleware (app)
   (lambda (env)
-    (if (or (equal "/authenticate" (getf env :path-info))
-            (get-login-user env))
-        (funcall app env)
-        (login-page))))
-
-
+    (let ((path-info (getf env :path-info))
+          (login-user (get-login-user env)))
+      (if (or (not (null (get-login-user env)))
+              (equal "/login" path-info)
+              (equal "/authenticate" path-info))
+          (funcall app env)
+          `(303
+            (:location ,(format nil "/login?redirect=~A" path-info)))))))
