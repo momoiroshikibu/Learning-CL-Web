@@ -111,6 +111,7 @@
              ("<h1>404 Not Found</h1>"))))))
 
 ;; app
-(lack:builder :session
+(lack:builder :accesslog
+              :session
               #'auth-handler-middleware
               #'app)
