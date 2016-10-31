@@ -29,7 +29,6 @@
                 :auth-handler-middleware)
   (:import-from :lack.request
                 :make-request
-                :request-cookies
                 :request-parameters))
 (in-package :com.momoiroshikibu.server)
 
