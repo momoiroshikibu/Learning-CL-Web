@@ -29,7 +29,8 @@
                 :auth-handler-middleware)
   (:import-from :lack.request
                 :make-request
-                :request-cookies))
+                :request-cookies
+                :request-parameters))
 (in-package :com.momoiroshikibu.server)
 
 
@@ -85,14 +86,17 @@
           ((path-by-id "/users/([0-9]+)" #'users-by-id))
 
           ((path "/login" request-path)
-           (login-page))
+           (let ((request (lack.request:make-request env)))
+             (login-page (getf env :query-string))))
 
           ((path "/authenticate" request-path)
            (let* ((request (lack.request:make-request env))
+                  (request-parameters (request-parameters request))
                   (body-parameters (lack.request:request-body-parameters request))
                   (mail-address (get-request-value body-parameters "mail-address"))
-                  (password (get-request-value body-parameters "password")))
-             (authenticate env mail-address password)))
+                  (password (get-request-value body-parameters "password"))
+                  (redirect-to (cdr (assoc "redirect" request-parameters :test 'equal))))
+             (authenticate env redirect-to mail-address password)))
 
           ((path "/logout" request-path)
            (logout env))

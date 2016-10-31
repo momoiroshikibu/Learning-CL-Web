@@ -14,12 +14,13 @@
 
 (defparameter *<login-html>* (read-file-into-string "views/login/login.html"))
 
-(defun login-page ()
+(defun login-page (query-string)
+  (print query-string)
   `(200
     (:content-type "text/html")
-    (,*<login-html>*)))
+    (,(format nil *<login-html>* query-string))))
 
-(defun authenticate (env mail-address password)
+(defun authenticate (env redirect-to mail-address password)
   (let* ((expected-password-hash (hash-password password))
          (user (get-user-from-mail-address mail-address expected-password-hash)))
     (if user
@@ -27,9 +28,9 @@
           (setf (gethash :login-user (getf env :lack.session)) user)
           (print (gethash :login-user (getf env :lack.session)))
           `(303
-            (:location "/users")))
+            (:location ,redirect-to)))
         `(303
-          (:location "/login")))))
+          (:location ,(format nil "/login?redirect=~A" redirect-to))))))
 
 (defun logout (env)
   (let ((options (getf env :lack.session.options)))
