@@ -19,10 +19,10 @@
 (in-package :com.momoiroshikibu.controllers.user)
 
 
-(defparameter *<users-partial-template>* (read-file-into-string "views/users-partial.html"))
-(defparameter *<users-page-template>* (read-file-into-string "views/users.html"))
-(defparameter *<users-new>* (read-file-into-string "views/users-new.html"))
-(defparameter *<user>* (read-file-into-string "views/user.html"))
+(defparameter *<users-partial-template>* (read-file-into-string "views/user/users-partial.html"))
+(defparameter *<users-page-template>* (read-file-into-string "views/user/users.html"))
+(defparameter *<users-new>* (read-file-into-string "views/user/users-new.html"))
+(defparameter *<user>* (read-file-into-string "views/user/user.html"))
 
 
 (defun users-new ()
