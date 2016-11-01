@@ -16,7 +16,7 @@
 (in-package :com.momoiroshikibu.controllers.location)
 
 
-; (defparameter *<location-new-html>* (read-file-into-string "views/location/location-new.html"))
+(defparameter *<location-new-html>* (read-file-into-string "views/location/location-new.html"))
 
 (defun location-index ()
   (print "location-index")
@@ -29,7 +29,7 @@
 (defun location-new ()
   `(200
     (:content-type "text/html")
-    (,(read-file-into-string "views/location/location-new.html"))))
+    (,*<location-new-html>*)))
 
 
 (defun location-by-id (id)
