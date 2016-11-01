@@ -17,7 +17,9 @@
   (let* ((query (dbi:prepare *connection*
                              "select * from locations limit ?"))
          (result (dbi:execute query limit)))
-    (dbi:fetch result)))
+    (loop for row = (dbi:fetch result)
+       while row
+       collect row)))
 
 (defun get-location-by-id (id)
   (let* ((query (dbi:prepare *connection*
