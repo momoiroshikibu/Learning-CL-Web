@@ -19,8 +19,10 @@
                 :register
                 :destroy)
   (:import-from :com.momoiroshikibu.controllers.location
-                :index
-                :location-by-id)
+                :location-index
+                :location-new
+                :location-by-id
+                :register-location)
   (:import-from :com.momoiroshikibu.controllers.login
                 :login-page
                 :authenticate
@@ -101,7 +103,17 @@
            (logout env))
 
           ((path "/locations" request-path)
-           (index))
+           (if (string= (getf env :request-method) "GET")
+               (location-index)
+               (let* ((request (lack.request:make-request env))
+                      (request-parameters (request-parameters request))
+                      (body-parameters (lack.request:request-body-parameters request))
+                      (lat (cdr (assoc "lat" body-parameters :test 'equal)))
+                      (lng (cdr (assoc "lng" body-parameters :test 'equal))))
+                 (register-location env lat lng))))
+
+          ((path "/locations/new" request-path)
+           (location-new))
 
           ((path-by-id "/locations/([0-9]+)" #'location-by-id))
 
