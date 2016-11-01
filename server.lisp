@@ -12,6 +12,8 @@
   (:import-from :lack.middleware.accesslog
                 :*lack-middleware-accesslog*)
 
+  (:import-from :com.momoiroshikibu.controllers.portal
+                :portal-index)
   (:import-from :com.momoiroshikibu.controllers.user
                 :users-new
                 :users
@@ -62,7 +64,10 @@
 
 (defun app (env)
   (let ((request-path (getf env :path-info)))
-    (cond ((path "/users" request-path)
+    (cond ((path "/" request-path)
+           (portal-index))
+
+          ((path "/users" request-path)
            (cond ((string= (getf env :request-method) "GET")
                   (users 1000))
                  ((string= (getf env :request-method) "POST")
