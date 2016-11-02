@@ -11,7 +11,9 @@
 
 (defparameter *<portal-new-html>* (read-file-into-string "views/portal/portal-index.html"))
 
-(defun portal-index ()
-  `(200
-    (:content-type "text/html")
-    (,(read-file-into-string "views/portal/portal-index.html"))))
+(defun portal-index (env)
+  (let* ((login-user (gethash :login-user (getf env :lack.session)))
+         (login-user-name (getf login-user :|first_name|)))
+    `(200
+      (:content-type "text/html")
+      (,(format nil (read-file-into-string "views/portal/portal-index.html") login-user-name)))))

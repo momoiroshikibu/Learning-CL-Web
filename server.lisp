@@ -65,7 +65,7 @@
 (defun app (env)
   (let ((request-path (getf env :path-info)))
     (cond ((path "/" request-path)
-           (portal-index))
+           (portal-index env))
 
           ((path "/users" request-path)
            (cond ((string= (getf env :request-method) "GET")
