@@ -13,7 +13,8 @@
 
 (defun portal-index (env)
   (let* ((login-user (gethash :login-user (getf env :lack.session)))
-         (login-user-name (getf login-user :|first_name|)))
+         (login-user-name (getf login-user :|first_name|))
+         (script (read-file-into-string "views/portal/portal.js")))
     `(200
       (:content-type "text/html")
-      (,(format nil (read-file-into-string "views/portal/portal-index.html") login-user-name)))))
+      (,(format nil (read-file-into-string "views/portal/portal-index.html") login-user-name script)))))
