@@ -19,6 +19,7 @@
 (load-file "./repositories/user-repository.lisp")
 (load-file "./repositories/location-repository.lisp")
 (load-file "./utils/file-util.lisp")
+(load-file "./utils/environment-util.lisp")
 (load-file "./controllers/login-controller.lisp")
 (load-file "./controllers/portal-controller.lisp")
 (load-file "./controllers/user-controller.lisp")

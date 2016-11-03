@@ -3,6 +3,8 @@
   (:use :cl)
   (:import-from :com.momoiroshikibu.utils
                 :read-file-into-string)
+  (:import-from :com.momoiroshikibu.utils.environment-util
+                :getenv)
   (:import-from :cl-json
                 :encode-json-to-string)
   (:export :portal-index))
@@ -14,7 +16,8 @@
 (defun portal-index (env)
   (let* ((login-user (gethash :login-user (getf env :lack.session)))
          (login-user-name (getf login-user :|first_name|))
-         (script (read-file-into-string "views/portal/portal.js")))
+         (script (read-file-into-string "views/portal/portal.js"))
+         (google-map-api-key (getenv "GOOGLE_MAP_API_KEY")))
     `(200
       (:content-type "text/html")
-      (,(format nil (read-file-into-string "views/portal/portal-index.html") login-user-name script)))))
+      (,(format nil (read-file-into-string "views/portal/portal-index.html") login-user-name script google-map-api-key)))))
