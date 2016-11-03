@@ -33,9 +33,16 @@
 (defun get-location-by-id (id)
   (let* ((query (dbi:prepare *connection*
                              "select * from locations where id = ?"))
-         (result (dbi:execute query id)))
-    (dbi:fetch result)))
-
+         (result (dbi:execute query id))
+         (row (dbi:fetch result)))
+    (make-instance 'location
+                   :id (getf row :|id|)
+                   :lat (getf row :|lat|)
+                   :lng (getf row :|lng|)
+                   :created-at (getf row :|created_at|)
+                   :created-by (getf row :|created_by|)
+                   :updated-at (getf row :|updated_at|)
+                   :updated-by (getf row :|updated_by|))))
 
 (defun create-location (user-id lat lng)
   (let* ((query (dbi:prepare *connection*

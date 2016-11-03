@@ -9,8 +9,6 @@
                 :create-location)
   (:import-from :cl-json
                 :encode-json-to-string)
-  (:import-from :jonathan
-                :to-json)
   (:export :location-index
            :location-new
            :location-by-id
@@ -35,7 +33,7 @@
 
 (defun location-by-id (id)
   (let* ((location (get-location-by-id id))
-         ({location} (to-json location)))
+         ({location} (encode-json-to-string location)))
     (if location
         `(200
           (:content-type "application/json")
