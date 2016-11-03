@@ -7,6 +7,8 @@
                 :get-locations
                 :get-location-by-id
                 :create-location)
+  (:import-from :com.momoiroshikibu.models.user
+                :get-id)
   (:import-from :cl-json
                 :encode-json-to-string)
   (:export :location-index
@@ -44,7 +46,7 @@
 
 (defun register-location (env lat lng)
   (let* ((login-user (gethash :login-user (getf env :lack.session)))
-         (login-user-id (getf login-user :|id|)))
+         (login-user-id (get-id login-user)))
     (create-location login-user-id lat lng)
     '(303
       (:location "/locations"))))

@@ -1,3 +1,17 @@
+(in-package :cl-user)
+(defpackage com.momoiroshikibu.models.user
+  (:use :cl)
+  (:export :user
+           :get-id
+           :get-first-name
+           :get-last-name
+           :get-mail-address
+           :get-created-at
+           :get-created-by
+           :get-updated-at
+           :get-updated-by))
+(in-package :com.momoiroshikibu.models.user)
+
 (defclass user ()
   ((id
     :reader get-id

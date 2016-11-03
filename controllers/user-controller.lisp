@@ -11,6 +11,12 @@
                 :get-user-by-id
                 :create-user
                 :destroy-user-by-id)
+  (:import-from :com.momoiroshikibu.models.user
+                :get-id
+                :get-last-name
+                :get-first-name
+                :get-mail-address
+                :get-created-at)
   (:export :users
            :register
            :destroy
@@ -33,12 +39,12 @@
 
 (defun users (count)
   (let* ((users (get-users count))
-         (<users-partial> (loop for row in users
+         (<users-partial> (loop for user in users
                              collect (format nil *<users-partial-template>*
-                                             (getf row :|id|)
-                                             (getf row :|id|)
-                                             (getf row :|last_name|)
-                                             (getf row :|first_name|))))
+                                             (get-id user)
+                                             (get-id user)
+                                             (get-last-name user)
+                                             (get-first-name user))))
          (<users-page> (format nil *<users-page-template>* (join-into-string <users-partial>))))
     `(200
       (:content-type "text/html")
@@ -48,12 +54,12 @@
 (defun users-by-id (user-id)
   (let* ((user (get-user-by-id user-id))
          (user-html (format nil *<user>*
-                            (getf user :|id|)
-                            (getf user :|first_name|)
-                            (getf user :|last_name|)
-                            (getf user :|mail_address|)
-                            (getf user :|created_at|)
-                            (getf user :|id|))))
+                            (get-id user)
+                            (get-first-name user)
+                            (get-last-name user)
+                            (get-mail-address user)
+                            (get-created-at user)
+                            (get-id user))))
     `(200
       (:content-type "text/html")
       (,user-html))))
