@@ -15,6 +15,7 @@
 
 (load-file "./utils/string-util.lisp")
 (load-file "./utils/datetime.lisp")
+(load-file "./models/location.lisp")
 (load-file "./database/connection.lisp")
 (load-file "./repositories/user-repository.lisp")
 (load-file "./repositories/location-repository.lisp")

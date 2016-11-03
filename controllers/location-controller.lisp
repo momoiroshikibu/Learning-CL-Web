@@ -22,7 +22,7 @@
 
 (defun location-index ()
   (let* ((locations (get-locations 100))
-         ({locations} (to-json locations)))
+         ({locations} (encode-json-to-string locations)))
     `(200
       (:content-type "application/json")
       (,{locations}))))

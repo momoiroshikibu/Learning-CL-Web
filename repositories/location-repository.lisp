@@ -6,6 +6,8 @@
                 :*connection*)
   (:import-from :com.momoiroshikibu.datetime
                 :get-current-date-in-yyyy-mm-dd-format)
+  (:import-from :com.momoiroshikibu.models.location
+                :location)
   (:export :get-locations
            :get-location-by-id
            :create-location
@@ -19,7 +21,15 @@
          (result (dbi:execute query limit)))
     (loop for row = (dbi:fetch result)
        while row
-       collect row)))
+;       collect row
+         collect (make-instance 'location
+                                :id (getf row :|id|)
+                                :lat (getf row :|lat|)
+                                :lng (getf row :|lng|)
+                                :created-at (getf row :|created_at|)
+                                :created-by (getf row :|created_by|)
+                                :updated-at (getf row :|updated_at|)
+                                :updated-by (getf row :|updated_by|)))))
 
 (defun get-location-by-id (id)
   (let* ((query (dbi:prepare *connection*
