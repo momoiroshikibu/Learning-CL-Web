@@ -21,15 +21,14 @@
          (result (dbi:execute query limit)))
     (loop for row = (dbi:fetch result)
        while row
-;       collect row
-         collect (make-instance 'location
-                                :id (getf row :|id|)
-                                :lat (getf row :|lat|)
-                                :lng (getf row :|lng|)
-                                :created-at (getf row :|created_at|)
-                                :created-by (getf row :|created_by|)
-                                :updated-at (getf row :|updated_at|)
-                                :updated-by (getf row :|updated_by|)))))
+       collect (make-instance 'location
+                              :id (getf row :|id|)
+                              :lat (getf row :|lat|)
+                              :lng (getf row :|lng|)
+                              :created-at (getf row :|created_at|)
+                              :created-by (getf row :|created_by|)
+                              :updated-at (getf row :|updated_at|)
+                              :updated-by (getf row :|updated_by|)))))
 
 (defun get-location-by-id (id)
   (let* ((query (dbi:prepare *connection*
