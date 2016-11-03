@@ -22,18 +22,39 @@ function setMarker(map) {
     }).then((locations) => {
         console.log(locations);
         locations.forEach((location) => {
-            console.log({
-                lat: location[3],
-                lng: location[5]
-            })
             var marker = new google.maps.Marker({
+                id: location.id,
                 position: {
-                    lat: location[3],
-                    lng: location[5]
+                    lat: location.lat,
+                    lng: location.lng
                 },
                 map: map,
                 title: 'Hello World!'
             });
+            marker.addListener('click', () => {
+                fetchLocation(marker.id).then((location) => {
+                    var infowindow = new google.maps.InfoWindow({
+                        content: JSON.stringify(location)
+                    });
+                    infowindow.open(map, marker);
+                })
+            })
+        })
+    })
+}
+
+
+function fetchLocation(locationId) {
+    return new Promise((resolve, reject) => {
+        fetch(`/locations/${locationId}`, {
+            method: 'GET',
+            credentials: 'same-origin'
+        }).then((response) => {
+            return response.json();
+        }).then((location) => {
+            resolve(location);
+        }).catch((error) => {
+            reject(error);
         })
     })
 }
