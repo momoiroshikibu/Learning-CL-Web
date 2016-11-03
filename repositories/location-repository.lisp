@@ -18,10 +18,20 @@
 (in-package :com.momoiroshikibu.repositories.location)
 
 
+(defvar *get-locations-prepared-statement* (dbi:prepare *connection*
+                                                        "select * from locations limit ?"))
+(defvar *get-location-by-id-prepared-statement* (dbi:prepare *connection*
+                                                             "select * from locations where id = ?"))
+
+(defvar *create-location-prepared-statement* (dbi:prepare *connection*
+                                                          "insert into locations values (null, ?, ?, ?, ?, null, null)"))
+
+(defvar *destroy-location-by-id* (dbi:prepare *connection*
+                                              "delete from locations where id = ?"))
+
+
 (defun get-locations (limit)
-  (let* ((query (dbi:prepare *connection*
-                             "select * from locations limit ?"))
-         (result (dbi:execute query limit)))
+  (let* ((result (dbi:execute *get-locations-prepared-statement* limit)))
     (loop for row = (dbi:fetch result)
        while row
        collect (make-instance 'location
@@ -34,9 +44,7 @@
                               :updated-by (getf row :|updated_by|)))))
 
 (defun get-location-by-id (id)
-  (let* ((query (dbi:prepare *connection*
-                             "select * from locations where id = ?"))
-         (result (dbi:execute query id))
+  (let* ((result (dbi:execute *get-location-by-id-prepared-statement* id))
          (row (dbi:fetch result)))
     (make-instance 'location
                    :id (getf row :|id|)
@@ -49,18 +57,14 @@
 
 (defun create-location (user-id lat lng)
   (with-transaction *connection*
-    (let* ((query (dbi:prepare *connection*
-                               "insert into locations values (null, ?, ?, ?, ?, null, null)"))
-           (current-date (get-current-date-in-yyyy-mm-dd-format))
-           (result (dbi:execute query lat lng current-date user-id)))
+    (let* ((current-date (get-current-date-in-yyyy-mm-dd-format))
+           (result (dbi:execute *create-location-prepared-statement* lat lng current-date user-id)))
       (dbi:fetch result))))
 
 
 (defun update-location (location)
-  (let* ((query (dbi:prepare *connection*
-                             "update locations set column1 = value1 where id = ?")))))
+  ; TODO
+  )
 
 (defun destroy-location-by-id (id)
-  (let ((query (dbi:prepare *connection*
-                            "delete from locations where id = ?")))
-    (dbi:execute query id)))
+  (dbi:execute *destroy-location-by-id* id))
