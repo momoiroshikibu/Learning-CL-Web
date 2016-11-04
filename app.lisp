@@ -97,7 +97,6 @@
            (logout env))
 
           ((path "/locations" request-path)
-           (print "yeah!!!!!!!!!!!!!!!!!")
            (if (string= (getf env :request-method) "GET")
                (location-index)
                (let* ((request (lack.request:make-request env))
