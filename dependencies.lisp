@@ -27,3 +27,4 @@
 (load-file "./controllers/user-controller.lisp")
 (load-file "./controllers/location-controller.lisp")
 (load-file "./middlewares/auth-handler-middleware.lisp")
+(load-file "./app.lisp")
