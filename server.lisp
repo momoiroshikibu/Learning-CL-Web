@@ -13,11 +13,10 @@
   (:import-from :com.momoiroshikibu.middlewares.auth-handler-middleware
                 :auth-handler-middleware)
   (:import-from :com.momoiroshikibu.app
-                :app)
-  (:export :*app*))
+                :app))
 (in-package :com.momoiroshikibu.server)
 
-(defvar *app* (lack:builder :accesslog
-                            :session
-                            #'auth-handler-middleware
-                            #'app))
+(lack:builder :accesslog
+              :session
+              #'auth-handler-middleware
+              #'app)
