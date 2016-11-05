@@ -4,6 +4,7 @@
   (:import-from :com.momoiroshikibu.utils
                 :read-file-into-string)
   (:import-from :com.momoiroshikibu.repositories.access-token
+                :get-access-tokens
                 :get-access-token-by-id)
   (:import-from :com.momoiroshikibu.models.user
                 :get-id)
