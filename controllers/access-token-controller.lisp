@@ -9,15 +9,16 @@
                 :get-id)
   (:import-from :cl-json
                 :encode-json-to-string)
-  (:export :access-token-by-id))
+  (:export :access-token-index
+           :access-token-by-id))
 (in-package :com.momoiroshikibu.controllers.access-token)
 
-;; (defun access-token-index ()
-;;   (let* ((locations (get-locations 100))
-;;          ({locations} (encode-json-to-string locations)))
-;;     `(200
-;;       (:content-type "application/json")
-;;       (,{locations}))))
+(defun access-token-index ()
+  (let* ((access-tokens (get-access-tokens 100))
+         ({access-tokens} (encode-json-to-string access-tokens)))
+    `(200
+      (:content-type "application/json")
+      (,{access-tokens}))))
 
 (defun access-token-by-id (id)
   (let* ((access-token (get-access-token-by-id id))
