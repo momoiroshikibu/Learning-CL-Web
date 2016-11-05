@@ -14,6 +14,8 @@
                 :location-new
                 :location-by-id
                 :register-location)
+  (:import-from :com.momoiroshikibu.controllers.access-token
+                :access-token-by-id)
   (:import-from :com.momoiroshikibu.controllers.login
                 :login-page
                 :authenticate
@@ -110,6 +112,8 @@
            (location-new))
 
           ((path-by-id "/locations/([0-9]+)" #'location-by-id))
+
+          ((path-by-id "/access-tokens/([0-9]+)" #'access-token-by-id))
 
           (t
            '(404
