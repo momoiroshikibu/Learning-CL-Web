@@ -2,11 +2,19 @@
 (defpackage com.momoiroshikibu.models.access-token
   (:use :cl)
   (:export :access-token
-           :make-access-token))
+           :get-id))
 (in-package :com.momoiroshikibu.models.access-token)
 
-(defstruct access-token
-  (id nil)
-  (user-id nil)
-  (access-token nil)
-  (created-at nil))
+(defclass access-token ()
+  ((id
+    :reader get-id
+    :initarg :id)
+   (user-id
+    :reader get-user-id
+    :initarg :user-id)
+   (access-token
+    :reader get-access-token
+    :initarg :access-token)
+   (created-at
+    :reader get-created-at
+    :initarg :created-at)))
