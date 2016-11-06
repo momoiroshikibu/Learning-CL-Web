@@ -17,7 +17,8 @@
   (:import-from :com.momoiroshikibu.controllers.access-token
                 :access-token-index
                 :access-token-by-access-token
-                :create-access-token)
+                :create-access-token
+                :destroy-access-token)
   (:import-from :com.momoiroshikibu.controllers.login
                 :login-page
                 :authenticate
@@ -48,10 +49,11 @@
 (defmacro path (pattern request-path)
   `(string= ,pattern ,request-path))
 
-(defmacro path-by-id (regex controller)
+(defmacro path-by-id (method regex controller)
   (let ((id (gensym)))
-    `(let ((,id (routing-by-id ,regex request-path)))
-       (if ,id
+    `(let ((,id (routing-by-id ,regex request-path))
+           (method ,method))
+       (if (and ,id (string= (getf env :request-method) method))
            (apply ,controller ,id)
            nil))))
 
@@ -82,7 +84,7 @@
               (get-request-value body-parameters "id"))))
 
 
-          ((path-by-id "/users/([0-9]+)" #'users-by-id))
+          ((path-by-id "GET" "/users/([0-9]+)" #'users-by-id))
 
           ((path "/login" request-path)
            (let ((request (lack.request:make-request env)))
@@ -113,7 +115,7 @@
           ((path "/locations/new" request-path)
            (location-new))
 
-          ((path-by-id "/locations/([0-9]+)" #'location-by-id))
+          ((path-by-id "GET" "/locations/([0-9]+)" #'location-by-id))
 
 
           ((path "/access-tokens" request-path)
@@ -121,7 +123,8 @@
                (access-token-index)
                (create-access-token env)))
 
-          ((path-by-id "/access-tokens/([0-9]+)" #'access-token-by-access-token))
+          ((path-by-id "GET" "/access-tokens/([0-9]+)" #'access-token-by-access-token))
+          ((path-by-id "DELETE" "/access-tokens/([0-9]+)" #'destroy-access-token))
 
           (t
            '(404

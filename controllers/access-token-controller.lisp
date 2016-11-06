@@ -6,14 +6,16 @@
   (:import-from :com.momoiroshikibu.repositories.access-token
                 :get-access-tokens
                 :get-access-token-by-access-token
-                :_create-access-token)
+                :_create-access-token
+                :_destroy-access-token)
   (:import-from :com.momoiroshikibu.models.user
                 :get-id)
   (:import-from :cl-json
                 :encode-json-to-string)
   (:export :access-token-index
            :access-token-by-access-token
-           :create-access-token))
+           :create-access-token
+           :destroy-access-token))
 (in-package :com.momoiroshikibu.controllers.access-token)
 
 (defun access-token-index ()
@@ -48,3 +50,10 @@
           '(404
             (:content-type "application/json")
             ("null"))))))
+
+
+(defun destroy-access-token (access-token)
+  (_destroy-access-token access-token)
+  `(200
+    (:content-type "application/json")
+    ()))

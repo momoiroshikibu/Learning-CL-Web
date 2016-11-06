@@ -8,7 +8,8 @@
                 :access-token)
   (:export :get-access-tokens
            :get-access-token-by-access-token
-           :_create-access-token))
+           :_create-access-token
+           :_destroy-access-token))
 (in-package :com.momoiroshikibu.repositories.access-token)
 
 (defvar *get-access-tokens-prepared-statement* (dbi:prepare *connection*
@@ -20,6 +21,9 @@
 
 (defvar *create-access-token-prepared-statement* (dbi:prepare *connection*
                                                               "insert into access_tokens values (?, ?, current_time)"))
+
+(defvar *destroy-access-token-by-access-token* (dbi:prepare *connection*
+                                              "delete from access_tokens where access_token = ?"))
 
 
 (defun get-access-tokens (limit)
@@ -50,3 +54,6 @@
                    access-token
                    user-id)
       (get-access-token-by-access-token access-token))))
+
+(defun _destroy-access-token (access-token)
+  (dbi:execute *destroy-access-token-by-access-token* access-token))
