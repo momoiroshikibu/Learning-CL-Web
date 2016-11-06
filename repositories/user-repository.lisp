@@ -21,15 +21,17 @@
                              "select * from users where mail_address = ? and password_hash = ?"))
          (result (dbi:execute query mail-address hashed-password))
          (row (dbi:fetch result)))
-    (make-instance 'user
-                   :id (getf row :|id|)
-                   :first-name (getf row :|first_name|)
-                   :last-name (getf row :|last_name|)
-                   :mail-address (getf row :|mail_address|)
-                   :created-at (getf row :|created_at|)
-                   :created-by (getf row :|created_by|)
-                   :updated-at (getf row :|updated_at|)
-                   :updated-by (getf row :|updated_by|))))
+    (if (null row)
+        nil
+        (make-instance 'user
+                       :id (getf row :|id|)
+                       :first-name (getf row :|first_name|)
+                       :last-name (getf row :|last_name|)
+                       :mail-address (getf row :|mail_address|)
+                       :created-at (getf row :|created_at|)
+                       :created-by (getf row :|created_by|)
+                       :updated-at (getf row :|updated_at|)
+                       :updated-by (getf row :|updated_by|)))))
 
 (defun get-users (n)
   (let* ((query (dbi:prepare *connection*

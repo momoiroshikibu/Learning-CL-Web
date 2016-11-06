@@ -39,12 +39,12 @@
 (defun get-access-token-by-access-token (access-token)
   (let* ((result (dbi:execute *get-access-token-by-access-token-prepared-statement* access-token))
          (row (dbi:fetch result)))
-    (if row
+    (if (null row)
+        nil
         (make-instance 'access-token
                        :access-token (getf row :|access_token|)
                        :user-id (getf row :|user_id|)
-                       :created-at (getf row :|created_at|))
-        nil)))
+                       :created-at (getf row :|created_at|)))))
 
 (defun _create-access-token (user-id)
   (let ((access-token (get-universal-time)))
