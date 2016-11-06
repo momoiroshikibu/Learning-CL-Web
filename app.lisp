@@ -50,9 +50,21 @@
   `(string= ,pattern ,request-path))
 
 
-(defmacro route (method pattern request-path)
+(defmacro route (method pattern)
   `(and (string= ,method (getf env :request-method))
-        (string= ,pattern ,request-path)))
+        (string= ,pattern request-path)))
+
+(defmacro @GET (pattern)
+  `(route "GET" ,pattern))
+
+(defmacro @POST (pattern)
+  `(route "POST" ,pattern))
+
+(defmacro @PUT (pattern)
+  `(route "PUT" ,pattern))
+
+(defmacro @DELETE (pattern)
+  `(route "DELETE" ,pattern))
 
 (defmacro path-by-id (method regex controller)
   (let ((id (gensym)))
@@ -69,13 +81,13 @@
 
 (defun app (env)
   (let ((request-path (getf env :path-info)))
-    (cond ((route @GET "/" request-path)
+    (cond ((@GET "/")
            (portal-index env))
 
-          ((route @GET "/users" request-path)
+          ((@GET "/users")
            (users 1000))
 
-          ((route @POST "/users" request-path)
+          ((@POST "/users")
            (let* ((request (lack.request:make-request env))
                   (body-parameters (lack.request:request-body-parameters request)))
              (register
@@ -84,10 +96,10 @@
               (get-request-value body-parameters "mail-address")
               (get-request-value body-parameters "password"))))
 
-          ((route @GET "/users/new" request-path)
+          ((@GET "/users/new")
            (users-new))
 
-          ((route @POST "/users/destroy" request-path)
+          ((@POST "/users/destroy")
            (let* ((request (lack.request:make-request env))
                   (body-parameters (lack.request:request-body-parameters request)))
              (destroy
@@ -96,11 +108,11 @@
 
           ((path-by-id @GET "/users/([0-9]+)" #'users-by-id))
 
-          ((route @GET "/login" request-path)
+          ((@GET "/login")
            (let ((request (lack.request:make-request env)))
              (login-page (getf env :query-string))))
 
-          ((route @POST "/authenticate" request-path)
+          ((@POST "/authenticate")
            (let* ((request (lack.request:make-request env))
                   (request-parameters (request-parameters request))
                   (body-parameters (lack.request:request-body-parameters request))
@@ -109,12 +121,12 @@
                   (redirect-to (cdr (assoc "redirect" request-parameters :test 'equal))))
              (authenticate env redirect-to mail-address password)))
 
-          ((route @GET "/logout" request-path)
+          ((@GET "/logout")
            (logout env))
 
-          ((route @GET "/locations" request-path)
+          ((@GET "/locations")
            (location-index))
-          ((route @POST "/locations" request-path)
+          ((@POST "/locations")
            (let* ((request (lack.request:make-request env))
                   (request-parameters (request-parameters request))
                   (body-parameters (lack.request:request-body-parameters request))
@@ -122,16 +134,16 @@
                   (lng (cdr (assoc "lng" body-parameters :test 'equal))))
              (register-location env lat lng)))
 
-          ((route @GET "/locations/new" request-path)
+          ((@GET "/locations/new")
            (location-new))
 
           ((path-by-id @GET "/locations/([0-9]+)" #'location-by-id))
 
 
-          ((route @GET "/access-tokens" request-path)
+          ((@GET "/access-tokens")
            (access-token-index))
 
-          ((route @POST "/access-tokens" request-path)
+          ((@POST "/access-tokens")
            (create-access-token env))
 
           ((path-by-id @GET "/access-tokens/([0-9]+)" #'access-token-by-access-token))
