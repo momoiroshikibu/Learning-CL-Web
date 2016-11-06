@@ -74,11 +74,6 @@
            (apply ,controller ,id)
            nil))))
 
-(defvar @GET "GET")
-(defvar @POST "POST")
-(defvar @PUT "PUT")
-(defvar @DELETE "DELETE")
-
 (defun app (env)
   (let ((request-path (getf env :path-info)))
     (cond ((@GET "/")
@@ -106,7 +101,7 @@
               (get-request-value body-parameters "id"))))
 
 
-          ((path-by-id @GET "/users/([0-9]+)" #'users-by-id))
+          ((path-by-id "GET" "/users/([0-9]+)" #'users-by-id))
 
           ((@GET "/login")
            (let ((request (lack.request:make-request env)))
@@ -137,7 +132,7 @@
           ((@GET "/locations/new")
            (location-new))
 
-          ((path-by-id @GET "/locations/([0-9]+)" #'location-by-id))
+          ((path-by-id "GET" "/locations/([0-9]+)" #'location-by-id))
 
 
           ((@GET "/access-tokens")
