@@ -8,6 +8,7 @@
 (ql:quickload :ironclad)
 (ql:quickload :jonathan)
 (ql:quickload :cl-json)
+(ql:quickload :uuid)
 
 
 (defmacro load-file (file-path)

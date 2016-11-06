@@ -16,7 +16,8 @@
                 :register-location)
   (:import-from :com.momoiroshikibu.controllers.access-token
                 :access-token-index
-                :access-token-by-access-token)
+                :access-token-by-access-token
+                :create-access-token)
   (:import-from :com.momoiroshikibu.controllers.login
                 :login-page
                 :authenticate
@@ -116,7 +117,10 @@
 
 
           ((path "/access-tokens" request-path)
-           (access-token-index))
+           (if (string= (getf env :request-method) "GET")
+               (access-token-index)
+               (create-access-token env)))
+
           ((path-by-id "/access-tokens/([0-9]+)" #'access-token-by-access-token))
 
           (t
