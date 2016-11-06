@@ -49,6 +49,11 @@
 (defmacro path (pattern request-path)
   `(string= ,pattern ,request-path))
 
+
+(defmacro route (method pattern request-path)
+  `(and (string= ,method (getf env :request-method))
+        (string= ,pattern ,request-path)))
+
 (defmacro path-by-id (method regex controller)
   (let ((id (gensym)))
     `(let ((,id (routing-by-id ,regex request-path))
@@ -57,40 +62,45 @@
            (apply ,controller ,id)
            nil))))
 
+(defvar @GET "GET")
+(defvar @POST "POST")
+(defvar @PUT "PUT")
+(defvar @DELETE "DELETE")
+
 (defun app (env)
   (let ((request-path (getf env :path-info)))
-    (cond ((path "/" request-path)
+    (cond ((route @GET "/" request-path)
            (portal-index env))
 
-          ((path "/users" request-path)
-           (cond ((string= (getf env :request-method) "GET")
-                  (users 1000))
-                 ((string= (getf env :request-method) "POST")
-                  (let* ((request (lack.request:make-request env))
-                         (body-parameters (lack.request:request-body-parameters request)))
-                    (register
-                     (get-request-value body-parameters "first-name")
-                     (get-request-value body-parameters "last-name")
-                     (get-request-value body-parameters "mail-address")
-                     (get-request-value body-parameters "password"))))))
+          ((route @GET "/users" request-path)
+           (users 1000))
 
-          ((path "/users/new" request-path)
+          ((route @POST "/users" request-path)
+           (let* ((request (lack.request:make-request env))
+                  (body-parameters (lack.request:request-body-parameters request)))
+             (register
+              (get-request-value body-parameters "first-name")
+              (get-request-value body-parameters "last-name")
+              (get-request-value body-parameters "mail-address")
+              (get-request-value body-parameters "password"))))
+
+          ((route @GET "/users/new" request-path)
            (users-new))
 
-          ((path "/users/destroy" request-path)
+          ((route @POST "/users/destroy" request-path)
            (let* ((request (lack.request:make-request env))
                   (body-parameters (lack.request:request-body-parameters request)))
              (destroy
               (get-request-value body-parameters "id"))))
 
 
-          ((path-by-id "GET" "/users/([0-9]+)" #'users-by-id))
+          ((path-by-id @GET "/users/([0-9]+)" #'users-by-id))
 
-          ((path "/login" request-path)
+          ((route @GET "/login" request-path)
            (let ((request (lack.request:make-request env)))
              (login-page (getf env :query-string))))
 
-          ((path "/authenticate" request-path)
+          ((route @POST "/authenticate" request-path)
            (let* ((request (lack.request:make-request env))
                   (request-parameters (request-parameters request))
                   (body-parameters (lack.request:request-body-parameters request))
@@ -99,32 +109,33 @@
                   (redirect-to (cdr (assoc "redirect" request-parameters :test 'equal))))
              (authenticate env redirect-to mail-address password)))
 
-          ((path "/logout" request-path)
+          ((route @GET "/logout" request-path)
            (logout env))
 
-          ((path "/locations" request-path)
-           (if (string= (getf env :request-method) "GET")
-               (location-index)
-               (let* ((request (lack.request:make-request env))
-                      (request-parameters (request-parameters request))
-                      (body-parameters (lack.request:request-body-parameters request))
-                      (lat (cdr (assoc "lat" body-parameters :test 'equal)))
-                      (lng (cdr (assoc "lng" body-parameters :test 'equal))))
-                 (register-location env lat lng))))
+          ((route @GET "/locations" request-path)
+           (location-index))
+          ((route @POST "/locations" request-path)
+           (let* ((request (lack.request:make-request env))
+                  (request-parameters (request-parameters request))
+                  (body-parameters (lack.request:request-body-parameters request))
+                  (lat (cdr (assoc "lat" body-parameters :test 'equal)))
+                  (lng (cdr (assoc "lng" body-parameters :test 'equal))))
+             (register-location env lat lng)))
 
-          ((path "/locations/new" request-path)
+          ((route @GET "/locations/new" request-path)
            (location-new))
 
-          ((path-by-id "GET" "/locations/([0-9]+)" #'location-by-id))
+          ((path-by-id @GET "/locations/([0-9]+)" #'location-by-id))
 
 
-          ((path "/access-tokens" request-path)
-           (if (string= (getf env :request-method) "GET")
-               (access-token-index)
-               (create-access-token env)))
+          ((route @GET "/access-tokens" request-path)
+           (access-token-index))
 
-          ((path-by-id "GET" "/access-tokens/([0-9]+)" #'access-token-by-access-token))
-          ((path-by-id "DELETE" "/access-tokens/([0-9]+)" #'destroy-access-token))
+          ((route @POST "/access-tokens" request-path)
+           (create-access-token env))
+
+          ((path-by-id @GET "/access-tokens/([0-9]+)" #'access-token-by-access-token))
+          ((path-by-id @DELETE "/access-tokens/([0-9]+)" #'destroy-access-token))
 
           (t
            '(404
