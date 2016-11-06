@@ -31,5 +31,6 @@
 (load-file "./controllers/user-controller.lisp")
 (load-file "./controllers/location-controller.lisp")
 (load-file "./controllers/access-token-controller.lisp")
+(load-file "./middlewares/access-token-handler-middleware.lisp")
 (load-file "./middlewares/auth-handler-middleware.lisp")
 (load-file "./app.lisp")

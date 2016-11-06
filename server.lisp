@@ -10,6 +10,8 @@
                 :*lack-middleware-session*)
   (:import-from :lack.middleware.accesslog
                 :*lack-middleware-accesslog*)
+  (:import-from :com.momoiroshikibu.middlewares.access-token-handler-middleware
+                :access-token-handler-middleware)
   (:import-from :com.momoiroshikibu.middlewares.auth-handler-middleware
                 :auth-handler-middleware)
   (:import-from :com.momoiroshikibu.app
@@ -18,5 +20,6 @@
 
 (lack:builder :accesslog
               :session
+              #'access-token-handler-middleware
               #'auth-handler-middleware
               #'app)
