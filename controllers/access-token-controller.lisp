@@ -5,13 +5,13 @@
                 :read-file-into-string)
   (:import-from :com.momoiroshikibu.repositories.access-token
                 :get-access-tokens
-                :get-access-token-by-id)
+                :get-access-token-by-access-token)
   (:import-from :com.momoiroshikibu.models.user
                 :get-id)
   (:import-from :cl-json
                 :encode-json-to-string)
   (:export :access-token-index
-           :access-token-by-id))
+           :access-token-by-access-token))
 (in-package :com.momoiroshikibu.controllers.access-token)
 
 (defun access-token-index ()
@@ -21,8 +21,8 @@
       (:content-type "application/json")
       (,{access-tokens}))))
 
-(defun access-token-by-id (id)
-  (let* ((access-token (get-access-token-by-id id))
+(defun access-token-by-access-token (access-token)
+  (let* ((access-token (get-access-token-by-access-token access-token))
          ({access-token} (encode-json-to-string access-token)))
     (if access-token
         `(200

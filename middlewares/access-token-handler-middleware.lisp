@@ -4,7 +4,7 @@
   (:import-from :com.momoiroshikibu.models.access-token
                 :get-user-id)
   (:import-from :com.momoiroshikibu.repositories.access-token
-                :get-access-token-by-id)
+                :get-access-token-by-access-token)
   (:import-from :com.momoiroshikibu.repositories.user
                 :get-user-by-id)
   (:export :access-token-middleware))
@@ -16,7 +16,7 @@
     (let* ((headers (getf env :headers))
            (requested-access-token (gethash "access-token" headers)))
       (if requested-access-token
-          (let ((access-token (get-access-token-by-id (parse-integer requested-access-token))))
+          (let ((access-token (get-access-token-by-access-token requested-access-token)))
             (if access-token
                 (let ((user (get-user-by-id (get-user-id access-token))))
                   (if user

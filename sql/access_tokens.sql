@@ -1,7 +1,6 @@
 create table access_tokens (
-    `id` integer auto_increment,
-    `user_id` integer,
     `access_token` varchar(255),
+    `user_id` integer,
     `created_at` date,
-    primary key(id)
+    primary key(access_token)
 );

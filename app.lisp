@@ -16,7 +16,7 @@
                 :register-location)
   (:import-from :com.momoiroshikibu.controllers.access-token
                 :access-token-index
-                :access-token-by-id)
+                :access-token-by-access-token)
   (:import-from :com.momoiroshikibu.controllers.login
                 :login-page
                 :authenticate
@@ -117,7 +117,7 @@
 
           ((path "/access-tokens" request-path)
            (access-token-index))
-          ((path-by-id "/access-tokens/([0-9]+)" #'access-token-by-id))
+          ((path-by-id "/access-tokens/([0-9]+)" #'access-token-by-access-token))
 
           (t
            '(404
