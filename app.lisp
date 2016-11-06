@@ -141,8 +141,8 @@
           ((@POST "/access-tokens")
            (create-access-token env))
 
-          ((path-by-id @GET "/access-tokens/([0-9]+)" #'access-token-by-access-token))
-          ((path-by-id @DELETE "/access-tokens/([0-9]+)" #'destroy-access-token))
+          ((path-by-id "GET" "/access-tokens/([0-9]+)" #'access-token-by-access-token))
+          ((path-by-id "DELETE" "/access-tokens/([0-9]+)" #'destroy-access-token))
 
           (t
            '(404
