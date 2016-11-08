@@ -17,6 +17,9 @@
                 :get-first-name
                 :get-mail-address
                 :get-created-at)
+  (:import-from :lack.request
+                :make-request
+                :request-parameters)
   (:export :users
            :register
            :destroy
@@ -37,8 +40,8 @@
     (,*<users-new>*)))
 
 
-(defun users (count)
-  (let* ((users (get-users count))
+(defun users ()
+  (let* ((users (get-users 1000))
          (<users-partial> (loop for user in users
                              collect (format nil *<users-partial-template>*
                                              (get-id user)
@@ -65,14 +68,23 @@
       (,user-html))))
 
 
-(defun register (first-name last-name mail-address password)
-  (let ((password-hash (hash-password password)))
-    (create-user first-name last-name mail-address password-hash)
+(defun register (env)
+  (let* ((request (lack.request:make-request env))
+         (body-parameters (lack.request:request-body-parameters request))
+         (first-name (assoc "first-name" plist :test #'equal))
+         (last-name (assoc "last-name" plist :test #'equal))
+         (mail-address (assoc "mail-address" plist :test #'equal))
+         (password (assoc "password" plist :test #'equal))
+         (hashed-password (hash-password password)))
+    (create-user first-name last-name mail-address hashed-password)
     `(303
       (:location "/users"))))
 
 
-(defun destroy (id)
-  (destroy-user-by-id id)
-  `(303
-    (:location "/users")))
+(defun destroy (env)
+  (let* ((request (lack.request:make-request env))
+         (body-parameters (lack.request:request-body-parameters request))
+         (user-id (last-name (assoc "id" plist :test #'equal))))
+    (destroy-user-by-id user-id)
+    `(303
+      (:location "/users"))))
