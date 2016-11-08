@@ -11,6 +11,9 @@
                 :get-id)
   (:import-from :cl-json
                 :encode-json-to-string)
+  (:import-from :lack.request
+                :make-request
+                :request-parameters)
   (:export :location-index
            :location-new
            :location-by-id
@@ -45,7 +48,12 @@
           ("null")))))
 
 (defun register-location (env lat lng)
-  (let* ((login-user (gethash :login-user (getf env :lack.session)))
+  (let* ((request (lack.request:make-request env))
+         (request-parameters (request-parameters request))
+         (body-parameters (lack.request:request-body-parameters request))
+         (lat (cdr (assoc "lat" body-parameters :test 'equal)))
+         (lng (cdr (assoc "lng" body-parameters :test 'equal)))
+         (login-user (gethash :login-user (getf env :lack.session)))
          (login-user-id (get-id login-user)))
     (create-location login-user-id lat lng)
     '(303
