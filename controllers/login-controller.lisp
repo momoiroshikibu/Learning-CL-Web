@@ -7,6 +7,9 @@
                 :hash-password)
   (:import-from :com.momoiroshikibu.repositories.user
                 :get-user-from-mail-address)
+  (:import-from :lack.request
+                :make-request
+                :request-parameters)
   (:export :login-page
            :authenticate
            :logout))
@@ -14,13 +17,21 @@
 
 (defparameter *<login-html>* (read-file-into-string "views/login/login.html"))
 
-(defun login-page (query-string)
-  `(200
-    (:content-type "text/html")
-    (,(format nil *<login-html>* query-string))))
+(defun login-page (env)
+  (let ((request (lack.request:make-request env))
+        (query-string (getf env :query-string)))
+    `(200
+      (:content-type "text/html")
+      (,(format nil *<login-html>* query-string)))))
 
-(defun authenticate (env redirect-to mail-address password)
-  (let* ((expected-password-hash (hash-password password))
+(defun authenticate (env)
+  (let* ((request (lack.request:make-request env))
+         (request-parameters (request-parameters request))
+         (body-parameters (lack.request:request-body-parameters request))
+         (mail-address (get-request-value body-parameters "mail-address"))
+         (password (get-request-value body-parameters "password"))
+         (redirect-to (cdr (assoc "redirect" request-parameters :test 'equal)))
+         (expected-password-hash (hash-password password))
          (user (get-user-from-mail-address mail-address expected-password-hash)))
     (if user
         (progn
@@ -30,6 +41,7 @@
             (:location ,redirect-to)))
         `(303
           (:location ,(format nil "/login?redirect=~A" redirect-to))))))
+
 
 (defun logout (env)
   (let ((options (getf env :lack.session.options)))
