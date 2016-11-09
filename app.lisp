@@ -93,12 +93,10 @@
 ;;            (@GET "/login" #'login-page)))
 
 
-(macroexpand '(@GET "/" #'portal-index))
-
 (defmacro @GET (pattern controller)
   `(if (and (string= "GET" (getf env :request-method))
              (string= ,pattern request-path))
-        (apply ,controller env)
+        (funcall ,controller env)
         nil))
 
 (defun app (env)
