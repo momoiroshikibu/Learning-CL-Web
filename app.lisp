@@ -72,6 +72,13 @@
            (apply ,controller ,id)
            nil))))
 
+(defmacro @GET/{id} (regex controller)
+  (let ((id (gensym)))
+    `(let ((,id (routing-by-id ,regex request-path)))
+       (if (and ,id (string= (getf env :request-method) "GET"))
+           (apply ,controller ,id)
+           nil))))
+
 
 ;; (defmacro routing (routes)
 ;;   `(mapcar #'(lambda (route)
@@ -120,6 +127,7 @@
         (@GET "/logout" #'logout)
         (@GET "/locations" #'location-index)
         (@POST "/locations" #'register-location)
+        (@GET/{id} "/locations/([0-9]+)" #'location-by-id)
         (@GET "/locations/new" #'location-new)
         (@GET "/access-tokens" #'access-token-index)
         (@POST "/access-tokens" #'create-access-token)
