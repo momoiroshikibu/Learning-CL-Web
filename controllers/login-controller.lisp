@@ -36,7 +36,6 @@
     (if user
         (progn
           (setf (gethash :login-user (getf env :lack.session)) user)
-          (print (gethash :login-user (getf env :lack.session)))
           `(303
             (:location ,redirect-to)))
         `(303
