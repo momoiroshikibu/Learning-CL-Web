@@ -28,9 +28,9 @@
   (let* ((request (lack.request:make-request env))
          (request-parameters (request-parameters request))
          (body-parameters (lack.request:request-body-parameters request))
-         (mail-address (get-request-value body-parameters "mail-address"))
-         (password (get-request-value body-parameters "password"))
-         (redirect-to (cdr (assoc "redirect" request-parameters :test 'equal)))
+         (mail-address (cdr (assoc "mail-address" body-parameters :test 'string=)))
+         (password (cdr (assoc "password" body-parameters :test 'string=)))
+         (redirect-to (cdr (assoc "redirect" request-parameters :test 'string=)))
          (expected-password-hash (hash-password password))
          (user (get-user-from-mail-address mail-address expected-password-hash)))
     (if user
