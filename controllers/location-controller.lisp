@@ -23,7 +23,7 @@
 
 (defparameter *<location-new-html>* (read-file-into-string "views/location/location-new.html"))
 
-(defun location-index ()
+(defun location-index (env)
   (let* ((locations (get-locations 100))
          ({locations} (encode-json-to-string locations)))
     `(200
