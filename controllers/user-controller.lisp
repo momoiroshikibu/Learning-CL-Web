@@ -40,7 +40,7 @@
     (,*<users-new>*)))
 
 
-(defun users ()
+(defun users (env)
   (let* ((users (get-users 1000))
          (<users-partial> (loop for user in users
                              collect (format nil *<users-partial-template>*
