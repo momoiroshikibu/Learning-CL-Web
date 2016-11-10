@@ -119,27 +119,29 @@
 
     (or (@GET "/" #'portal-index)
         (@GET "/login" #'login-page)
+        (@POST "/authenticate" #'authenticate)
+        (@GET "/logout" #'logout)
+
         (@GET "/users" #'users)
+        (@GET/{id} "/users/([0-9]+)" #'users-by-id)
         (@GET "/users/new" #'users-new)
         (@POST "/users/destroy" #'destroy)
         (@POST "/users" #'register)
-        (@POST "/authenticate" #'authenticate)
-        (@GET "/logout" #'logout)
+
+
         (@GET "/locations" #'location-index)
         (@POST "/locations" #'register-location)
         (@GET/{id} "/locations/([0-9]+)" #'location-by-id)
         (@GET "/locations/new" #'location-new)
+
         (@GET "/access-tokens" #'access-token-index)
         (@POST "/access-tokens" #'create-access-token)
+        (@GET/{id} "/access-tokens/([0-9]+)" #'access-token-by-access-token)
+
         '(404
           (:content-type "text/html")
           ("<h1>404 Not Found</h1>")))))
 
-
-
-;; ;;           ((path-by-id "GET" "/users/([0-9]+)" #'users-by-id))
-;; ;;           ((path-by-id "GET" "/locations/([0-9]+)" #'location-by-id))
-;; ;;           ((path-by-id "GET" "/access-tokens/([0-9]+)" #'access-token-by-access-token))
 ;; ;;           ((path-by-id "DELETE" "/access-tokens/([0-9]+)" #'destroy-access-token))
 
 ;;           (t
