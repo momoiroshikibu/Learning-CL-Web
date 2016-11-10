@@ -55,8 +55,8 @@
         (string= ,pattern request-path)))
 
 
-(defmacro @POST (pattern controller)
-  `(route "POST" ,pattern ,controller))
+;; (defmacro @POST (pattern controller)
+;;   `(route "POST" ,pattern ,controller))
 
 (defmacro @PUT (pattern controller)
   `(route "PUT" ,pattern ,controller))
@@ -95,6 +95,12 @@
 
 (defmacro @GET (pattern controller)
   `(if (and (string= "GET" (getf env :request-method))
+             (string= ,pattern request-path))
+        (funcall ,controller env)
+        nil))
+
+(defmacro @POST (pattern controller)
+  `(if (and (string= "POST" (getf env :request-method))
              (string= ,pattern request-path))
         (funcall ,controller env)
         nil))
