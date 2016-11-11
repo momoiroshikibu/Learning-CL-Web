@@ -50,19 +50,8 @@
   `(string= ,pattern ,request-path))
 
 
-(defmacro route (method pattern controller)
-  `(and (string= ,method (getf env :request-method))
-        (string= ,pattern request-path)))
 
 
-;; (defmacro @POST (pattern controller)
-;;   `(route "POST" ,pattern ,controller))
-
-(defmacro @PUT (pattern controller)
-  `(route "PUT" ,pattern ,controller))
-
-(defmacro @DELETE (pattern controller)
-  `(route "DELETE" ,pattern ,controller))
 
 (defmacro path-by-id (method regex controller)
   (let ((id (gensym)))
@@ -100,17 +89,23 @@
 ;;            (@GET "/login" #'login-page)))
 
 
-(defmacro @GET (pattern controller)
-  `(if (and (string= "GET" (getf env :request-method))
+(defmacro define-route (method pattern controller)
+  ``(if (and (string= ,,method (getf env :request-method))
              (string= ,pattern request-path))
         (funcall ,controller env)
         nil))
 
+(defmacro @GET (pattern controller)
+  (define-route "GET" pattern controller))
+
 (defmacro @POST (pattern controller)
-  `(if (and (string= "POST" (getf env :request-method))
-             (string= ,pattern request-path))
-        (funcall ,controller env)
-        nil))
+  (define-route "POST" pattern controller))
+
+(defmacro @PUT (pattern controller)
+  (define-route "PUT" pattern controller))
+
+(defmacro @DELETE (pattern controller)
+  (define-route "DELETE" pattern controller))
 
 (defun app (env)
   (let ((request-path (getf env :path-info)))
