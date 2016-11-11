@@ -30,11 +30,10 @@
       (:content-type "application/json")
       (,{locations}))))
 
-(defun location-new ()
+(defun location-new (env)
   `(200
     (:content-type "text/html")
     (,*<location-new-html>*)))
-
 
 (defun location-by-id (id)
   (let* ((location (get-location-by-id id))
@@ -47,12 +46,12 @@
           (:content-type "application/json")
           ("null")))))
 
-(defun register-location (env lat lng)
+(defun register-location (env)
   (let* ((request (lack.request:make-request env))
          (request-parameters (request-parameters request))
          (body-parameters (lack.request:request-body-parameters request))
-         (lat (cdr (assoc "lat" body-parameters :test 'equal)))
-         (lng (cdr (assoc "lng" body-parameters :test 'equal)))
+         (lat (cdr (assoc "lat" body-parameters :test #'string=)))
+         (lng (cdr (assoc "lng" body-parameters :test #'string=)))
          (login-user (gethash :login-user (getf env :lack.session)))
          (login-user-id (get-id login-user)))
     (create-location login-user-id lat lng)
