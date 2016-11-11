@@ -34,7 +34,7 @@
 (defparameter *<user>* (read-file-into-string "views/user/user.html"))
 
 
-(defun users-new ()
+(defun users-new (env)
   `(200
     (:content-type "text/html")
     (,*<users-new>*)))
@@ -71,10 +71,10 @@
 (defun register (env)
   (let* ((request (lack.request:make-request env))
          (body-parameters (lack.request:request-body-parameters request))
-         (first-name (assoc "first-name" plist :test #'equal))
-         (last-name (assoc "last-name" plist :test #'equal))
-         (mail-address (assoc "mail-address" plist :test #'equal))
-         (password (assoc "password" plist :test #'equal))
+         (first-name (cdr (assoc "first-name" body-parameters :test #'string=)))
+         (last-name (cdr (assoc "last-name" body-parameters :test #'string=)))
+         (mail-address (cdr (assoc "mail-address" body-parameters :test #'string=)))
+         (password (cdr (assoc "password" body-parameters :test #'string=)))
          (hashed-password (hash-password password)))
     (create-user first-name last-name mail-address hashed-password)
     `(303
@@ -84,7 +84,7 @@
 (defun destroy (env)
   (let* ((request (lack.request:make-request env))
          (body-parameters (lack.request:request-body-parameters request))
-         (user-id (last-name (assoc "id" plist :test #'equal))))
+         (user-id (cdr (assoc "id" body-parameters :test #'string=))))
     (destroy-user-by-id user-id)
     `(303
       (:location "/users"))))
