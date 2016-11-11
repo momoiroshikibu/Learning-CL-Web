@@ -114,9 +114,6 @@
 
 (defun app (env)
   (let ((request-path (getf env :path-info)))
-    (print (getf env :request-method))
-    (print env)
-
     (or (@GET "/" #'portal-index)
         (@GET "/login" #'login-page)
         (@POST "/authenticate" #'authenticate)
