@@ -18,7 +18,7 @@
            :destroy-access-token))
 (in-package :com.momoiroshikibu.controllers.access-token)
 
-(defun access-token-index ()
+(defun access-token-index (env)
   (let* ((access-tokens (get-access-tokens 100))
          ({access-tokens} (encode-json-to-string access-tokens)))
     `(200
