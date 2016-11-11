@@ -31,64 +31,6 @@
 (in-package :com.momoiroshikibu.app)
 
 
-(defun routing-by-id (regex path)
-  (ppcre:register-groups-bind (id)
-      (regex path :sharedp t)
-    (list id)))
-
-(defun get-request-value (pairs key)
-  (labels ((get-value (pairs key)
-             (let ((pair (car pairs)))
-               (if (null pair)
-                   nil
-                   (if (equal key (car pair))
-                       (cdr pair)
-                       (get-value (cdr pairs) key))))))
-    (get-value pairs key)))
-
-(defmacro path (pattern request-path)
-  `(string= ,pattern ,request-path))
-
-
-
-
-
-(defmacro path-by-id (method regex controller)
-  (let ((id (gensym)))
-    `(let ((,id (routing-by-id ,regex request-path))
-           (method ,method))
-       (if (and ,id (string= (getf env :request-method) method))
-           (apply ,controller ,id)
-           nil))))
-
-(defmacro @GET/{id} (regex controller)
-  (let ((id (gensym)))
-    `(let ((,id (routing-by-id ,regex request-path)))
-       (if (and ,id (string= (getf env :request-method) "GET"))
-           (apply ,controller ,id)
-           nil))))
-
-
-;; (defmacro routing (routes)
-;;   `(mapcar #'(lambda (route)
-;;               `(hello ,,q(cadr route)))
-;;           ,@routes))
-
-;; (defmacro routing (routes)
-;;   `(progn
-;;      ,(mapcar #'(lambda (route)
-;;                  `(print ,(cadr route)))
-;;                ,@routes)))
-
-;; (macroexpand '(routing (("GET" "/" #'portal-index)
-;;                         ("GET" "/users" #'users)
-;;                         ("GET" "/login" #'login-page))))
-
- ;; (routing '((@GET "/" #'portal-index)
-;;            (@GET "/users" #'users)
-;;            (@GET "/login" #'login-page)))
-
-
 (defmacro define-route (method pattern controller)
   ``(if (and (string= ,,method (getf env :request-method))
              (string= ,pattern request-path))
@@ -106,6 +48,18 @@
 
 (defmacro @DELETE (pattern controller)
   (define-route "DELETE" pattern controller))
+
+(defmacro @GET/{id} (regex controller)
+  (let ((id (gensym)))
+    `(let ((,id (routing-by-id ,regex request-path)))
+       (if (and ,id (string= (getf env :request-method) "GET"))
+           (apply ,controller ,id)
+           nil))))
+
+(defun routing-by-id (regex path)
+  (ppcre:register-groups-bind (id)
+      (regex path :sharedp t)
+    (list id)))
 
 (defun app (env)
   (let ((request-path (getf env :path-info)))
@@ -133,11 +87,3 @@
         '(404
           (:content-type "text/html")
           ("<h1>404 Not Found</h1>")))))
-
-;; ;;           ((path-by-id "DELETE" "/access-tokens/([0-9]+)" #'destroy-access-token))
-
-;;           (t
-;;            '(404
-;;              (:content-type "text/html")
-;;              ("<h1>404 Not Found</h1>"))))
-
