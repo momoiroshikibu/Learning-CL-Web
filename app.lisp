@@ -85,5 +85,5 @@
         (@GET/{id} "/access-tokens/([0-9]+)" #'access-token-by-access-token)
 
         '(404
-          (:content-type "text/html")
-          ("<h1>404 Not Found</h1>")))))
+          (:content-type "application/json")
+          ("null")))))
