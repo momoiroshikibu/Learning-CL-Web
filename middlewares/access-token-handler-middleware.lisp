@@ -23,5 +23,7 @@
                       (progn
                         (setf (gethash :login-user (getf env :lack.session)) user)
                         (funcall app env))))
-                `(403 (:content-type "application/json") ("{\"message\": \"403\"}"))))
+                `(403
+                  (:content-type "application/json")
+                  ("{\"message\": \"unauthorized\"}"))))
           (funcall app env)))))
