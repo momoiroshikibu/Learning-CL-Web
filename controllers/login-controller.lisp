@@ -36,5 +36,6 @@
 (defun logout (env)
   (let ((options (getf env :lack.session.options)))
     (setf (getf options :expire) t))
-  `(303
-    (:location "/login")))
+  `(200
+    (:content-type "application/json")
+    ("{\"message:\" \"logout success\"}")))
