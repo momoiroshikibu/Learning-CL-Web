@@ -19,5 +19,6 @@
               (equal "/login" path-info)
               (equal "/authenticate" path-info))
           (funcall app env)
-          `(303
-            (:location ,(format nil "/login?redirect=~A" path-info)))))))
+          `(403
+            (:content-type "application/json")
+            ("{\"message\": \"unauthorized\"}"))))))
