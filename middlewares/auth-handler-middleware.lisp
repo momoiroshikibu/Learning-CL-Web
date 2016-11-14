@@ -2,7 +2,6 @@
 (defpackage com.momoiroshikibu.middlewares.auth-handler-middleware
   (:use :cl)
   (:import-from :com.momoiroshikibu.controllers.login
-                :login-page
                 :authenticate)
   (:export :auth-handler-middleware))
 (in-package :com.momoiroshikibu.middlewares.auth-handler-middleware)

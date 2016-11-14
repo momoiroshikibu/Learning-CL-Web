@@ -10,19 +10,10 @@
   (:import-from :lack.request
                 :make-request
                 :request-parameters)
-  (:export :login-page
-           :authenticate
+  (:export :authenticate
            :logout))
 (in-package :com.momoiroshikibu.controllers.login)
 
-(defparameter *<login-html>* (read-file-into-string "views/login/login.html"))
-
-(defun login-page (env)
-  (let ((request (lack.request:make-request env))
-        (query-string (getf env :query-string)))
-    `(200
-      (:content-type "text/html")
-      (,(format nil *<login-html>* query-string)))))
 
 (defun authenticate (env)
   (let* ((request (lack.request:make-request env))

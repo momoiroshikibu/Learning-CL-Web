@@ -19,7 +19,6 @@
                 :create-access-token
                 :destroy-access-token)
   (:import-from :com.momoiroshikibu.controllers.login
-                :login-page
                 :authenticate
                 :logout)
   (:import-from :lack.request
@@ -63,7 +62,6 @@
 (defun app (env)
   (let ((request-path (getf env :path-info)))
     (or (@GET "/" #'portal-index)
-        (@GET "/login" #'login-page)
         (@POST "/authenticate" #'authenticate)
         (@GET "/logout" #'logout)
 
