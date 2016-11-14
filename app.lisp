@@ -11,7 +11,6 @@
                 :destroy)
   (:import-from :com.momoiroshikibu.controllers.location
                 :location-index
-                :location-new
                 :location-by-id
                 :register-location)
   (:import-from :com.momoiroshikibu.controllers.access-token
@@ -78,7 +77,6 @@
         (@GET "/locations" #'location-index)
         (@POST "/locations" #'register-location)
         (@GET/{id} "/locations/([0-9]+)" #'location-by-id)
-        (@GET "/locations/new" #'location-new)
 
         (@GET "/access-tokens" #'access-token-index)
         (@POST "/access-tokens" #'create-access-token)

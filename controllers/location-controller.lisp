@@ -15,13 +15,11 @@
                 :make-request
                 :request-parameters)
   (:export :location-index
-           :location-new
            :location-by-id
            :register-location))
 (in-package :com.momoiroshikibu.controllers.location)
 
 
-(defparameter *<location-new-html>* (read-file-into-string "views/location/location-new.html"))
 
 (defun location-index (env)
   (let* ((locations (get-locations 100))
@@ -29,11 +27,6 @@
     `(200
       (:content-type "application/json")
       (,{locations}))))
-
-(defun location-new (env)
-  `(200
-    (:content-type "text/html")
-    (,*<location-new-html>*)))
 
 (defun location-by-id (id)
   (let* ((location (get-location-by-id id))
