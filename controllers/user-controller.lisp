@@ -33,17 +33,9 @@
 
 
 (defun users (env)
-  (let* ((users (get-users 1000))
-         (<users-partial> (loop for user in users
-                             collect (format nil *<users-partial-template>*
-                                             (get-id user)
-                                             (get-id user)
-                                             (get-last-name user)
-                                             (get-first-name user))))
-         (<users-page> (format nil *<users-page-template>* (join-into-string <users-partial>))))
-    `(200
-      (:content-type "text/html")
-      (,<users-page>))))
+  `(200
+    (:content-type "application/json")
+    (encode-json-to-string (get-users 1000))))
 
 
 (defun users-by-id (user-id)
