@@ -69,5 +69,6 @@
          (body-parameters (lack.request:request-body-parameters request))
          (user-id (cdr (assoc "id" body-parameters :test #'string=))))
     (destroy-user-by-id user-id)
-    `(303
-      (:location "/users"))))
+    `(200
+      (:content-type "application/json")
+      ("{\"result\": \"user deleted\"}"))))
