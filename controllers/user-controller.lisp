@@ -48,6 +48,7 @@
           (:content-type "application/json")
           ("{\"message\": \"user not found\"}")))))
 
+
 (defun register (env)
   (let* ((request (lack.request:make-request env))
          (body-parameters (lack.request:request-body-parameters request))
@@ -57,8 +58,10 @@
          (password (cdr (assoc "password" body-parameters :test #'string=)))
          (hashed-password (hash-password password)))
     (create-user first-name last-name mail-address hashed-password)
-    `(303
-      (:location "/users"))))
+    `(201
+      (:content-type "application/json")
+      ;; TODO: should return created user resource
+      ("{\"result\": \"user created\"}"))))
 
 
 (defun destroy (env)
