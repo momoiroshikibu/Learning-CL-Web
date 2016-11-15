@@ -20,16 +20,16 @@
   (:import-from :lack.request
                 :make-request
                 :request-parameters)
+  (:import-from :cl-json
+                :encode-json-to-string)
   (:export :users
            :register
-           :destroy
-           :users-by-id))
+           :destroy))
 (in-package :com.momoiroshikibu.controllers.user)
 
 
 (defparameter *<users-partial-template>* (read-file-into-string "views/user/users-partial.html"))
 (defparameter *<users-page-template>* (read-file-into-string "views/user/users.html"))
-(defparameter *<user>* (read-file-into-string "views/user/user.html"))
 
 
 (defun users (env)
@@ -47,18 +47,14 @@
 
 
 (defun users-by-id (user-id)
-  (let* ((user (get-user-by-id user-id))
-         (user-html (format nil *<user>*
-                            (get-id user)
-                            (get-first-name user)
-                            (get-last-name user)
-                            (get-mail-address user)
-                            (get-created-at user)
-                            (get-id user))))
-    `(200
-      (:content-type "text/html")
-      (,user-html))))
-
+  (let ((user (get-user-by-id user-id)))
+    (if user
+        `(200
+          (:content-type "application/json")
+          (encode-json-to-string user))
+        '(404
+          (:content-type "application/json")
+          ("{\"message\": \"user not found\"}")))))
 
 (defun register (env)
   (let* ((request (lack.request:make-request env))
