@@ -23,21 +23,13 @@
   (:export :users
            :register
            :destroy
-           :users-new
            :users-by-id))
 (in-package :com.momoiroshikibu.controllers.user)
 
 
 (defparameter *<users-partial-template>* (read-file-into-string "views/user/users-partial.html"))
 (defparameter *<users-page-template>* (read-file-into-string "views/user/users.html"))
-(defparameter *<users-new>* (read-file-into-string "views/user/users-new.html"))
 (defparameter *<user>* (read-file-into-string "views/user/user.html"))
-
-
-(defun users-new (env)
-  `(200
-    (:content-type "text/html")
-    (,*<users-new>*)))
 
 
 (defun users (env)

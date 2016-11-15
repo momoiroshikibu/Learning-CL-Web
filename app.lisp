@@ -4,7 +4,6 @@
   (:import-from :com.momoiroshikibu.controllers.portal
                 :portal-index)
   (:import-from :com.momoiroshikibu.controllers.user
-                :users-new
                 :users
                 :users-by-id
                 :register
@@ -67,7 +66,6 @@
 
         (@GET "/users" #'users)
         (@GET/{id} "/users/([0-9]+)" #'users-by-id)
-        (@GET "/users/new" #'users-new)
         (@POST "/users/destroy" #'destroy)
         (@POST "/users" #'register)
 
