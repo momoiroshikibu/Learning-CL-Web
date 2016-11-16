@@ -27,10 +27,12 @@
     (if user
         (progn
           (setf (gethash :login-user (getf env :lack.session)) user)
-          `(303
-            (:location ,redirect-to)))
-        `(303
-          (:location ,(format nil "/login?redirect=~A" redirect-to))))))
+          (200
+           (:content-type "application/json")
+           ("{\"message:\" \"login success\"}")))
+        `(401
+          (:content-type "application/json")
+          ("{\"message:\" \"login success\"}")))))
 
 
 (defun logout (env)
