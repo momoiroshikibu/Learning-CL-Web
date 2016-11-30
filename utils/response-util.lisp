@@ -14,3 +14,8 @@
   `(201
     (:content-type "application/json")
     (,body)))
+
+(defun 400-BAD-REQUEST (body)
+  `(400
+    (:content-type "application/json")
+    (,body)))
