@@ -2,7 +2,8 @@
 (defpackage com.momoiroshikibu.utils.response-util
   (:use :cl)
   (:export :200-OK
-           :201-CREATED))
+           :201-CREATED
+           :400-BAD_REQUEST))
 (in-package :com.momoiroshikibu.utils.response-util)
 
 (defun 200-OK (body)
