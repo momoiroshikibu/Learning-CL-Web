@@ -1,6 +1,8 @@
 (in-package :cl-user)
 (defpackage com.momoiroshikibu.app
   (:use :cl)
+  (:import-from :com.momoiroshikibu.utils.response-util
+                :404-NOT-FOUND)
   (:import-from :com.momoiroshikibu.controllers.portal
                 :portal-index)
   (:import-from :com.momoiroshikibu.controllers.user
@@ -78,6 +80,4 @@
         (@POST "/access-tokens" #'create-access-token)
         (@GET/{id} "/access-tokens/([0-9]+)" #'access-token-by-access-token)
 
-        '(404
-          (:content-type "application/json")
-          ("null")))))
+        (404-NOT-FOUND ("null")))))
