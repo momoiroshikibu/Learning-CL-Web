@@ -21,9 +21,13 @@
                 (let ((user (get-user-by-id (get-user-id access-token))))
                   (if user
                       (progn
-                        (setf (gethash :login-user (getf env :lack.session)) user)
-                        (funcall app env))))
-                `(403
-                  (:content-type "application/json")
-                  ("{\"message\": \"unauthorized\"}"))))
-          (funcall app env)))))
+                        (setf (get :authenticated-user env) user)
+                        (funcall app env))
+                      (403-FORBIDDEN)))
+                (403-FORBIDDEN)))
+          (403-FORBIDDEN)))))
+
+(defun 403-FORBIDDEN ()
+  '(403
+    (:content-type "application/json")
+    ("{\"message\": \"unauthorized\"}")))
