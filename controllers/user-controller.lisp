@@ -33,9 +33,11 @@
 
 
 (defun users (env)
-  `(200
-    (:content-type "application/json")
-    (encode-json-to-string (get-users 1000))))
+  (let* ((users (get-users 1000))
+        ({users} (encode-json-to-string users)))
+    `(200
+      (:content-type "application/json")
+      ,{users})))
 
 
 (defun users-by-id (user-id)
