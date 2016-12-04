@@ -16,7 +16,8 @@
           (login-user (get-login-user env)))
       (if (or (not (null login-user))
               (equal "/login" path-info)
-              (equal "/authenticate" path-info))
+              (equal "/authenticate" path-info)
+              (equal "/access-tokens" path-info))
           (funcall app env)
           `(403
             (:content-type "application/json")

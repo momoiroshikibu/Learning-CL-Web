@@ -21,5 +21,5 @@
 (lack:builder :accesslog
               :session
               #'access-token-handler-middleware
-              #'auth-handler-middleware
+;              #'auth-handler-middleware
               #'app)

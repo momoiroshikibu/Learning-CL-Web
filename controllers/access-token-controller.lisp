@@ -3,6 +3,10 @@
   (:use :cl)
   (:import-from :com.momoiroshikibu.utils
                 :read-file-into-string)
+  (:import-from :com.momoiroshikibu.utils.string-util
+                :hash-password)
+  (:import-from :com.momoiroshikibu.repositories.user
+                :get-user-from-mail-address)
   (:import-from :com.momoiroshikibu.repositories.access-token
                 :get-access-tokens
                 :get-access-token-by-access-token
@@ -12,6 +16,8 @@
                 :get-id)
   (:import-from :cl-json
                 :encode-json-to-string)
+  (:import-from :lack.request
+                :request-parameters)
   (:export :access-token-index
            :access-token-by-access-token
            :create-access-token
@@ -38,9 +44,15 @@
           ("null")))))
 
 (defun create-access-token (env)
-  (let* ((login-user (gethash :login-user (getf env :lack.session)))
-         (login-user-id (get-id login-user)))
-    (let* ((access-token (_create-access-token login-user-id))
+  (let* ((request (lack.request:make-request env))
+         (request-parameters (request-parameters request))
+         (body-parameters (lack.request:request-body-parameters request))
+         (mail-address (cdr (assoc "mail-address" body-parameters :test 'string=)))
+         (password (cdr (assoc "password" body-parameters :test 'string=)))
+         (expected-password-hash (hash-password password))
+         (user (get-user-from-mail-address mail-address expected-password-hash)))
+    (princ user)
+    (let* ((access-token (_create-access-token (get-id user)))
            ({access-token} (encode-json-to-string access-token)))
       (print {access-token})
       (if access-token
