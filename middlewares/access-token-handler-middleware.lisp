@@ -25,7 +25,10 @@
                         (funcall app env))
                       (403-FORBIDDEN)))
                 (403-FORBIDDEN)))
-          (403-FORBIDDEN)))))
+          (let ((path-info (getf env :path-info)))
+            (if (equal "/access-tokens" path-info)
+                (funcall app env)
+                (403-FORBIDDEN)))))))
 
 (defun 403-FORBIDDEN ()
   '(403
