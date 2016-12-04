@@ -37,7 +37,7 @@
         ({users} (encode-json-to-string users)))
     `(200
       (:content-type "application/json")
-      ,{users})))
+      (,{users}))))
 
 
 (defun users-by-id (user-id)
