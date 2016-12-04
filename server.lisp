@@ -19,7 +19,5 @@
 (in-package :com.momoiroshikibu.server)
 
 (lack:builder :accesslog
-;              :session
               #'access-token-handler-middleware
-;              #'auth-handler-middleware
               #'app)
