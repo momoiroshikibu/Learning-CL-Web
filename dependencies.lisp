@@ -16,6 +16,7 @@
 
 
 (load-file "./utils/string-util.lisp")
+(load-file "./utils/response-util.lisp")
 (load-file "./utils/datetime.lisp")
 (load-file "./utils/file-util.lisp")
 (load-file "./config.lisp")
