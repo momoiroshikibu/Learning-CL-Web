@@ -12,8 +12,6 @@
                 :*lack-middleware-accesslog*)
   (:import-from :com.momoiroshikibu.middlewares.access-token-handler-middleware
                 :access-token-handler-middleware)
-  (:import-from :com.momoiroshikibu.middlewares.auth-handler-middleware
-                :auth-handler-middleware)
   (:import-from :com.momoiroshikibu.app
                 :app))
 (in-package :com.momoiroshikibu.server)
