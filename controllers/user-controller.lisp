@@ -28,10 +28,6 @@
 (in-package :com.momoiroshikibu.controllers.user)
 
 
-(defparameter *<users-partial-template>* (read-file-into-string "views/user/users-partial.html"))
-(defparameter *<users-page-template>* (read-file-into-string "views/user/users.html"))
-
-
 (defun users (env)
   (let* ((users (get-users 1000))
         ({users} (encode-json-to-string users)))
