@@ -44,9 +44,22 @@
   (define-route "DELETE" pattern controller))
 
 (defmacro @GET/{id} (regex controller)
+  ``(define-route-by-id "GET" regex controller))
+
+(defmacro @DELETE/{id} (regex controller)
+  ``(define-route-by-id "DELETE" regex controller))
+
+(defmacro define-route-by-id (method pattern controller)
+  ``(let ((id (gensym)))
+    `(let ((,id (routing-by-id ,regex request-path)))
+       (if (and ,id (string= (getf env :request-method) method))
+           (apply ,controller ,id)
+           nil))))
+
+(defmacro @DELETE/{id} (regex controller)
   (let ((id (gensym)))
     `(let ((,id (routing-by-id ,regex request-path)))
-       (if (and ,id (string= (getf env :request-method) "GET"))
+       (if (and ,id (string= (getf env :request-method) "DELETE"))
            (apply ,controller ,id)
            nil))))
 
@@ -59,7 +72,7 @@
   (let ((request-path (getf env :path-info)))
     (or (@GET "/users" #'users)
         (@GET/{id} "/users/([0-9]+)" #'users-by-id)
-        (@POST "/users/destroy" #'destroy)
+        (@DELETE/{id} "/users" #'destroy)
         (@POST "/users" #'register)
 
         (@GET "/locations" #'location-index)
