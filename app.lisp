@@ -71,7 +71,6 @@
         (@POST "/users/destroy" #'destroy)
         (@POST "/users" #'register)
 
-
         (@GET "/locations" #'location-index)
         (@POST "/locations" #'register-location)
         (@GET/{id} "/locations/([0-9]+)" #'location-by-id)
@@ -80,4 +79,4 @@
         (@POST "/access-tokens" #'create-access-token)
         (@GET/{id} "/access-tokens/([0-9]+)" #'access-token-by-access-token)
 
-        (404-NOT-FOUND "null"))))
+        (404-NOT-FOUND "{\"message\": \"not found\"}"))))
