@@ -17,9 +17,6 @@
                 :access-token-by-access-token
                 :create-access-token
                 :destroy-access-token)
-  (:import-from :com.momoiroshikibu.controllers.login
-                :authenticate
-                :logout)
   (:import-from :lack.request
                 :make-request
                 :request-parameters)
@@ -60,10 +57,7 @@
 
 (defun app (env)
   (let ((request-path (getf env :path-info)))
-    (or (@POST "/authenticate" #'authenticate)
-        (@GET "/logout" #'logout)
-
-        (@GET "/users" #'users)
+    (or (@GET "/users" #'users)
         (@GET/{id} "/users/([0-9]+)" #'users-by-id)
         (@POST "/users/destroy" #'destroy)
         (@POST "/users" #'register)
