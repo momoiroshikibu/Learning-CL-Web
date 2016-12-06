@@ -29,7 +29,6 @@
 (load-file "./repositories/access-token-repository.lisp")
 (load-file "./utils/environment-util.lisp")
 (load-file "./controllers/login-controller.lisp")
-(load-file "./controllers/portal-controller.lisp")
 (load-file "./controllers/user-controller.lisp")
 (load-file "./controllers/location-controller.lisp")
 (load-file "./controllers/access-token-controller.lisp")

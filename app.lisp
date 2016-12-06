@@ -3,8 +3,6 @@
   (:use :cl)
   (:import-from :com.momoiroshikibu.utils.response-util
                 :404-NOT-FOUND)
-  (:import-from :com.momoiroshikibu.controllers.portal
-                :portal-index)
   (:import-from :com.momoiroshikibu.controllers.user
                 :users
                 :users-by-id
@@ -62,8 +60,7 @@
 
 (defun app (env)
   (let ((request-path (getf env :path-info)))
-    (or (@GET "/" #'portal-index)
-        (@POST "/authenticate" #'authenticate)
+    (or (@POST "/authenticate" #'authenticate)
         (@GET "/logout" #'logout)
 
         (@GET "/users" #'users)
