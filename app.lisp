@@ -72,11 +72,10 @@
 
 
 (defun HTTP-GET (env path controller)
-  (let ((request-path (getf env :path-info))
+  (let ((request-path (string-right-trim "/" (getf env :path-info)))
         (request-method (getf env :request-method)))
     (if (and (string= "GET" request-method)
-             (or (string= path request-path)
-                 (string= path (join-into-string '(request-path "/")))))
+             (string= path request-path))
         (funcall controller env)
         nil)))
 
@@ -88,11 +87,11 @@
 ;        (@DELETE/{id} "/users/([0-9]+)" #'destroy)
         (@POST "/users" #'register)
 
-        (@GET "/locations" #'location-index)
+        (HTTP-GET env "/locations" #'location-index)
         (@POST "/locations" #'register-location)
 ;        (@GET/{id} "/locations/([0-9]+)" #'location-by-id)
 
-        (@GET "/access-tokens" #'access-token-index)
+        (HTTP-GET env "/access-tokens" #'access-token-index)
         (@POST "/access-tokens" #'create-access-token)
 ;        (@GET/{id} "/access-tokens/([0-9]+)" #'access-token-by-access-token)
 
