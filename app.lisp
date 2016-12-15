@@ -104,6 +104,6 @@
 
         (HTTP-GET env "/access-tokens" #'access-token-index)
         (@POST "/access-tokens" #'create-access-token)
-;        (@GET/{id} "/access-tokens/([0-9]+)" #'access-token-by-access-token)
+        (HTTP-GET-BY-ID env "/access-tokens/([0-9]+)" #'access-token-by-access-token)
 
         (404-NOT-FOUND "{\"message\": \"not found\"}"))))
