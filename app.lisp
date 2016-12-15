@@ -79,11 +79,21 @@
         (funcall controller env)
         nil)))
 
+(defun HTTP-GET-BY-ID (env pattern controller)
+  (let ((id (ppcre:register-groups-bind (id)
+               (pattern (getf env :path-info) :sharedp t)
+             id))
+        (request-method (getf env :request-method)))
+    (if (and id
+             (string= "GET" request-method))
+        (funcall controller id)
+        nil)))
+
 
 (defun app (env)
   (let ((request-path (getf env :path-info)))
     (or (HTTP-GET env "/users" #'users)
-;        (@GET/{id} "/users/([0-9]+)" #'users-by-id)
+        (HTTP-GET-BY-ID env "/users/([0-9]+)" #'users-by-id)
 ;        (@DELETE/{id} "/users/([0-9]+)" #'destroy)
         (@POST "/users" #'register)
 

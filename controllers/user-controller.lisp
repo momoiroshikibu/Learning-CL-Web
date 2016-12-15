@@ -40,7 +40,7 @@
     (if user
         `(200
           (:content-type "application/json")
-          (encode-json-to-string user))
+          (,(encode-json-to-string user)))
         '(404
           (:content-type "application/json")
           ("{\"message\": \"user not found\"}")))))
