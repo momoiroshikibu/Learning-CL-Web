@@ -100,6 +100,7 @@
         (HTTP-GET env "/locations" #'location-index)
         (@POST "/locations" #'register-location)
 ;        (@GET/{id} "/locations/([0-9]+)" #'location-by-id)
+        (HTTP-GET-BY-ID env "/locations/([0-9]+)" #'location-by-id)
 
         (HTTP-GET env "/access-tokens" #'access-token-index)
         (@POST "/access-tokens" #'create-access-token)
