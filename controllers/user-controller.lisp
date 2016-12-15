@@ -4,8 +4,7 @@
   (:import-from :com.momoiroshikibu.utils
                 :read-file-into-string)
   (:import-from :com.momoiroshikibu.utils.string-util
-                :hash-password
-                :join-into-string)
+                :hash-password)
   (:import-from :com.momoiroshikibu.repositories.user
                 :get-users
                 :get-user-by-id
