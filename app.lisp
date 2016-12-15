@@ -33,45 +33,11 @@
         (funcall ,controller env)
         nil))
 
-(defmacro @GET (pattern controller)
-  (define-route "GET" pattern controller))
 
 (defmacro @POST (pattern controller)
   (define-route "POST" pattern controller))
 
-(defmacro @PUT (pattern controller)
-  (define-route "PUT" pattern controller))
-
-(defmacro @DELETE (pattern controller)
-  (define-route "DELETE" pattern controller))
-
-
-
-;; (defmacro define-route-by-id (method regex controller)
-;;   ``(let ((id (gensym))
-;;           (method ,method)
-;;           (regex ,regex)
-;;           (controller ,controller))
-;;       `(let ((,id (routing-by-id regex request-path)))
-;;          (if (and ,id (string= (getf env :request-method) ,method))
-;;              (apply ,controller ,id)
-;;              nil))))
-
-;; (defun routing-by-id (regex path)
-;;   (ppcre:register-groups-bind (id)
-;;       (regex path :sharedp t)
-;;     (list id)))
-
-
-;; (defmacro @GET/{id} (regex controller)
-;;   (define-route-by-id "GET" regex controller))
-
-;; (defmacro @DELETE/{id} (regex controller)
-;;   (define-route-by-id "DELETE" regex controller))
-
-
-
-(defun HTTP-GET (env path controller)
+(defun @GET (env path controller)
   (let ((request-path (string-right-trim "/" (getf env :path-info)))
         (request-method (getf env :request-method)))
     (if (and (string= "GET" request-method)
@@ -79,7 +45,7 @@
         (funcall controller env)
         nil)))
 
-(defun HTTP-GET-BY-ID (env pattern controller)
+(defun @GET-BY-ID (env pattern controller)
   (let ((id (ppcre:register-groups-bind (id)
                (pattern (getf env :path-info) :sharedp t)
              id))
@@ -92,18 +58,18 @@
 
 (defun app (env)
   (let ((request-path (getf env :path-info)))
-    (or (HTTP-GET env "/users" #'users)
-        (HTTP-GET-BY-ID env "/users/([0-9]+)" #'users-by-id)
+    (or (@GET env "/users" #'users)
+        (@GET-BY-ID env "/users/([0-9]+)" #'users-by-id)
 ;        (@DELETE/{id} "/users/([0-9]+)" #'destroy)
         (@POST "/users" #'register)
 
-        (HTTP-GET env "/locations" #'location-index)
+        (@GET env "/locations" #'location-index)
         (@POST "/locations" #'register-location)
 ;        (@GET/{id} "/locations/([0-9]+)" #'location-by-id)
-        (HTTP-GET-BY-ID env "/locations/([0-9]+)" #'location-by-id)
+        (@GET-BY-ID env "/locations/([0-9]+)" #'location-by-id)
 
-        (HTTP-GET env "/access-tokens" #'access-token-index)
+        (@GET env "/access-tokens" #'access-token-index)
         (@POST "/access-tokens" #'create-access-token)
-        (HTTP-GET-BY-ID env "/access-tokens/([0-9]+)" #'access-token-by-access-token)
+        (@GET-BY-ID env "/access-tokens/([0-9]+)" #'access-token-by-access-token)
 
         (404-NOT-FOUND "{\"message\": \"not found\"}"))))
