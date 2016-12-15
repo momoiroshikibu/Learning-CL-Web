@@ -12,4 +12,4 @@
     (ironclad:ascii-string-to-byte-array password))))
 
 (defun join-into-string (string-list)
-    (format nil "~{~A~^ ~}" string-list))
+  (format nil "~{~A~}" string-list))
