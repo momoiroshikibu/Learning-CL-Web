@@ -3,6 +3,8 @@
   (:use :cl)
   (:import-from :com.momoiroshikibu.utils.response-util
                 :404-NOT-FOUND)
+  (:import-from :com.momoiroshikibu.utils.string-util
+                :join-into-string)
   (:import-from :com.momoiroshikibu.controllers.user
                 :users
                 :users-by-id
@@ -74,7 +76,7 @@
         (request-method (getf env :request-method)))
     (if (and (string= "GET" request-method)
              (or (string= path request-path)
-                 (string= path (join-into-string request-path "/"))))
+                 (string= path (join-into-string '(request-path "/")))))
         (funcall controller env)
         nil)))
 
