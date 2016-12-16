@@ -51,17 +51,20 @@
          (password (cdr (assoc "password" body-parameters :test 'string=)))
          (expected-password-hash (hash-password password))
          (user (get-user-from-mail-address mail-address expected-password-hash)))
-    (princ user)
-    (let* ((access-token (_create-access-token (get-id user)))
-           ({access-token} (encode-json-to-string access-token)))
-      (print {access-token})
-      (if access-token
-          `(200
-            (:content-type "application/json")
-            (,{access-token}))
-          '(404
-            (:content-type "application/json")
-            ("null"))))))
+    (if user
+        (let* ((access-token (_create-access-token (get-id user)))
+               ({access-token} (encode-json-to-string access-token)))
+          (print {access-token})
+          (if access-token
+              `(200
+                (:content-type "application/json")
+                (,{access-token}))
+              '(404
+                (:content-type "application/json")
+                ("null"))))
+        '(400
+          (:content-type "application/json")
+          ("{\"message\": \"authentication failed\"}")))))
 
 
 (defun destroy-access-token (access-token)
