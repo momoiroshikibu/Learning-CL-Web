@@ -26,17 +26,6 @@
 
 (in-package :com.momoiroshikibu.app)
 
-
-(defmacro define-route (method pattern controller)
-  ``(if (and (string= ,,method (getf env :request-method))
-             (string= ,pattern request-path))
-        (funcall ,controller env)
-        nil))
-
-
-(defmacro @POST (pattern controller)
-  (define-route "POST" pattern controller))
-
 (defun @GET (env path controller)
   (let ((request-path (string-right-trim "/" (getf env :path-info)))
         (request-method (getf env :request-method)))
@@ -55,21 +44,28 @@
         (funcall controller id)
         nil)))
 
+(defun @POST (env path controller)
+  (let ((request-path (string-right-trim "/" (getf env :path-info)))
+        (request-method (getf env :request-method)))
+    (if (and (string= "POST" request-method)
+             (string= path request-path))
+        (funcall controller env)
+        nil)))
 
 (defun app (env)
   (let ((request-path (getf env :path-info)))
     (or (@GET env "/users" #'users)
         (@GET-BY-ID env "/users/([0-9]+)" #'users-by-id)
 ;        (@DELETE/{id} "/users/([0-9]+)" #'destroy)
-        (@POST "/users" #'register)
+        (@POST env "/users" #'register)
 
         (@GET env "/locations" #'location-index)
-        (@POST "/locations" #'register-location)
+        (@POST env "/locations" #'register-location)
 ;        (@GET/{id} "/locations/([0-9]+)" #'location-by-id)
         (@GET-BY-ID env "/locations/([0-9]+)" #'location-by-id)
 
         (@GET env "/access-tokens" #'access-token-index)
-        (@POST "/access-tokens" #'create-access-token)
+        (@POST env "/access-tokens" #'create-access-token)
         (@GET-BY-ID env "/access-tokens/([0-9]+)" #'access-token-by-access-token)
 
         (404-NOT-FOUND "{\"message\": \"not found\"}"))))
